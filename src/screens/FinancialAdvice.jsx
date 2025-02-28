@@ -5,6 +5,7 @@ import { supabase } from "@/supabase";
 import GroupedBarChart from "@/components/GroupedBarChart";
 import ExpenseAnalyzer from "@/components/ExpenseAnalyser";
 import InvestmentAvenues from "@/components/InvestmentAvenues";
+import ChatComponent from "@/components/chatComponent";
 
 const FinancialAdvice = () => {
   const [balance, setBalance] = useState(null);
@@ -60,6 +61,8 @@ const FinancialAdvice = () => {
      <InvestmentAvenues />
 
       </div>
+      <ChatComponent/>
+
       
     </>
   );
