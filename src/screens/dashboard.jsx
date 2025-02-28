@@ -101,11 +101,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(true);
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("token");
-    navigate("/login");
-  };
-
   return (
     <div
       className={`min-h-screen ${
