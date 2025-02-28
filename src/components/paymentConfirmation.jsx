@@ -1,8 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const PaymentConfirmation = ({ amount, paymentMethod }) => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate("/dashboard");
+    }, 8000);
+
+    return () => clearTimeout(timer);
+  }, [navigate]);
+
   return (
     <Box
       component={motion.div}
@@ -26,10 +37,11 @@ const PaymentConfirmation = ({ amount, paymentMethod }) => {
         Your payment of <strong>${amount}</strong> via{" "}
         <strong>{paymentMethod}</strong> has been successfully processed.
       </Typography>
+      <Typography variant="body2" sx={{ mt: 2 }} color="#B0BEC5">
+        Redirecting to dashboard in 8 seconds...
+      </Typography>
     </Box>
   );
 };
 
 export default PaymentConfirmation;
-
-// Now it has a dark, glowing card effect with a smooth fade-in animation! 🚀 Let me know if you want me to tweak anything!
