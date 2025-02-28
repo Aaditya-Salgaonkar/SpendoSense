@@ -6,6 +6,8 @@ import GooglePayForm from "./googlePayForm";
 
 const PaymentForm = ({
   paymentMethod,
+  merchantName,
+  setMerchantName,
   googlePayType,
   handlePaymentChange,
   handleGooglePayTypeChange,
@@ -30,10 +32,12 @@ const PaymentForm = ({
           </select>
         </div>
 
-        {paymentMethod === "creditCard" && <CreditCardForm />}
-        {paymentMethod === "paypal" && <PayPalForm />}
+        {paymentMethod === "creditCard" && <CreditCardForm merchantName={merchantName} setMerchantName={setMerchantName}/>}
+        {paymentMethod === "paypal" && <PayPalForm merchantName={merchantName} setMerchantName={setMerchantName}/>}
         {paymentMethod === "googlePay" && (
           <GooglePayForm
+            merchantName={merchantName} 
+            setMerchantName={setMerchantName}
             googlePayType={googlePayType}
             handleTypeChange={handleGooglePayTypeChange}
           />

@@ -1,6 +1,6 @@
 import React from "react";
 
-const creditCardForm = () => (
+const creditCardForm = ({ merchantName, setMerchantName }) => (
   <div className="payment-details">
     <h3>Credit Card Details</h3>
     <div className="form-group">

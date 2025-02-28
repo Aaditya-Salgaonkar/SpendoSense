@@ -1,6 +1,6 @@
 import React from "react";
 
-const GooglePayForm = ({ googlePayType, handleTypeChange }) => (
+const GooglePayForm = ({ merchantName, setMerchantName, googlePayType, handleTypeChange }) => (
   <div className="payment-details">
     <h3>Google Pay Details</h3>
     <div className="form-group">

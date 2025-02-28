@@ -1,6 +1,6 @@
 import React from "react";
 
-const PayPalForm = () => (
+const PayPalForm = ({ merchantName, setMerchantName }) => (
   <div className="payment-details">
     <h3>PayPal Details</h3>
     <div className="form-group">
