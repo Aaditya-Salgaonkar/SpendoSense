@@ -6,6 +6,7 @@ import GroupedBarChart from "@/components/GroupedBarChart";
 import ExpenseAnalyzer from "@/components/ExpenseAnalyser";
 import InvestmentAvenues from "@/components/InvestmentAvenues";
 import ChatComponent from "@/components/chatComponent";
+import ChatBot from "@/components/ChatBot";
 
 const FinancialAdvice = () => {
   const [balance, setBalance] = useState(null);
@@ -62,6 +63,8 @@ const FinancialAdvice = () => {
 
       </div>
       <ChatComponent/>
+      <ChatBot /> 
+
 
       
     </>
