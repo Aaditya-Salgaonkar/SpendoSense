@@ -3,8 +3,8 @@ import BudgetingCard from "@/components/BudgetingCard";
 import UnnecessaryExpenses from "@/components/UnnecessaryExpenses";
 import { supabase } from "@/supabase";
 import GroupedBarChart from "@/components/GroupedBarChart";
-import ExpenseAnalyser from "@/components/ExpenseAnalyser";
 import ExpenseAnalyzer from "@/components/ExpenseAnalyser";
+import InvestmentAvenues from "@/components/InvestmentAvenues";
 
 const FinancialAdvice = () => {
   const [balance, setBalance] = useState(null);
@@ -57,6 +57,8 @@ const FinancialAdvice = () => {
       </div> 
       <div className="min-h-screen flex flex-row justify-between bg-[#0a0f1c] p-10 h-full w-full gap-8">
      <ExpenseAnalyzer />
+     <InvestmentAvenues />
+
       </div>
       
     </>
