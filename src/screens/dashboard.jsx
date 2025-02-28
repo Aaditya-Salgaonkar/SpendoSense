@@ -1,92 +1,136 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Box, Stack, Typography } from "@mui/material";
-import { Cell, LineChart, Line } from "recharts";
-import HomeIcon from "@mui/icons-material/Home";
-import PersonIcon from "@mui/icons-material/Person";
-import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
-
 import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
   BarChart,
   Bar,
   XAxis,
   YAxis,
-  Tooltip,
-  ResponsiveContainer,
+  Legend,
   LabelList,
+  LineChart,
+  Line,
 } from "recharts";
-import { Card, CardContent } from "@/components/ui/card";
+import HomeNav from "@/components/HomeNav";
+import HomeIcon from "@mui/icons-material/Home";
+import PersonIcon from "@mui/icons-material/Person";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+
+const COLORS = ["#4CAF50", "#FFC107", "#2196F3", "#FF5722"];
+
+const topStats = [
+  { title: "Available Balance", value: "$14,822", color: "text-green-400" },
+  { title: "Total Net Worth", value: "$278,378", color: "text-red-300" },
+  { title: "Total Spendings", value: "$9,228", color: "text-yellow-300" },
+];
+
+const incomeSourceData = [
+  { name: "E-commerce", value: 2100, color: "#FFFFFF" },
+  { name: "Google Adsense", value: 950, color: "#FF4D4D" },
+  { name: "My Shop", value: 8000, color: "#FFFFFF" },
+  { name: "Salary", value: 13000, color: "#00D084" },
+];
+
+const spendingBreakdown = [
+  {
+    label: "Housing",
+    amount: "$3,452",
+    icon: <HomeIcon sx={{ color: "white" }} />,
+    iconColor: "#8B5CF6",
+  },
+  {
+    label: "Personal",
+    amount: "$45,581",
+    icon: <PersonIcon sx={{ color: "white" }} />,
+    iconColor: "#EC4899",
+  },
+  {
+    label: "Transportation",
+    amount: "$2,190",
+    icon: <DirectionsCarIcon sx={{ color: "white" }} />,
+    iconColor: "#F97316",
+  },
+];
+
+const assetData = [
+  { name: "Gold", value: 15700 },
+  { name: "Stocks", value: 22500 },
+  { name: "Warehouse", value: 120000 },
+  { name: "Land", value: 135000 },
+];
+
+const transactions = [
+  {
+    id: 1,
+    type: "Income",
+    amount: 2500,
+    category: "Salary",
+    date: "2024-02-26",
+  },
+  {
+    id: 2,
+    type: "Expense",
+    amount: 120,
+    category: "Groceries",
+    date: "2024-02-24",
+  },
+  {
+    id: 3,
+    type: "Expense",
+    amount: 70,
+    category: "Transport",
+    date: "2024-02-22",
+  },
+  {
+    id: 4,
+    type: "Income",
+    amount: 800,
+    category: "Freelance",
+    date: "2024-02-20",
+  },
+];
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const data = [
-    { name: "E-commerce", value: 2100, color: " #FFFFFF" },
-    { name: "Google Adsense", value: 950, color: "#FF4D4D" },
-    { name: "My Shop", value: 8000, color: "#FFFFFF" },
-    { name: "Salary", value: 13000, color: "#00D084" },
-  ];
-
-  const data2 = [
-    {
-      label: "Housing",
-      amount: "$3,452",
-      icon: <HomeIcon sx={{ color: "white" }} />,
-      iconColor: "#8B5CF6",
-    },
-    {
-      label: "Personal",
-      amount: "$45,581",
-      icon: <PersonIcon sx={{ color: "white" }} />,
-      iconColor: "#EC4899",
-    },
-    {
-      label: "Transportation",
-      amount: "$2,190",
-      icon: <DirectionsCarIcon sx={{ color: "white" }} />,
-      iconColor: "#F97316",
-    },
-  ];
+  const [darkMode, setDarkMode] = useState(true);
 
   const handleLogout = () => {
-    sessionStorage.removeItem("token"); // Clear token
-    navigate("/login"); // Redirect to login
+    sessionStorage.removeItem("token");
+    navigate("/login");
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0f1c] text-white flex flex-col items-center p-8">
-      {/* Navbar */}
-      <nav className="w-full flex justify-between items-center bg-gray-900 p-4 shadow-lg rounded-lg">
-        <h1 className="text-2xl font-bold text-blue-400">Premium Dashboard</h1>
-        <Button
-          onClick={handleLogout}
-          className="bg-red-600 hover:bg-red-700 px-4 py-2 text-white rounded-lg"
-        >
-          Logout
-        </Button>
-      </nav>
+    <div
+      className={`min-h-screen ${
+        darkMode ? "bg-[#0a0f1c] text-white" : "bg-gray-100 text-black"
+      } flex flex-col items-center p-8`}
+    >
+      {/* Secondary Navigation */}
+      <div className="w-full mt-4">
+        <HomeNav />
+      </div>
 
-      {/* Dashboard Content */}
-      <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-8xl mt-8 bg-white">
-        {/* Card 1 */}
+      {/* Combined Cards Section */}
+      <div className="w-full mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Card 1: Net Worth & Income Source */}
         <Stack
-          direction={"column"}
+          direction="column"
           gap={2}
-          sx={{
-            height: "100%",
-            width: "100%",
-          }}
+          sx={{ height: "100%", width: "100%" }}
         >
           <motion.div
-            style={{
-              height: "30%",
-              width: "100%",
-            }}
+            style={{ height: "30%", width: "100%" }}
             whileHover={{ scale: 1.05 }}
           >
             <Stack
-              direction={"column"}
+              direction="column"
               spacing={1}
               pt={2}
               pl={3}
@@ -98,19 +142,15 @@ const Dashboard = () => {
               }}
             >
               <Typography fontSize={32} fontWeight={600}>
-                Total networth
+                Total Networth
               </Typography>
               <Typography fontSize={32} fontWeight={600}>
                 $278,378
               </Typography>
             </Stack>
           </motion.div>
-
           <motion.div
-            style={{
-              height: "70%",
-              width: "100%",
-            }}
+            style={{ height: "70%", width: "100%" }}
             whileHover={{ scale: 1.05 }}
           >
             <Box
@@ -128,16 +168,14 @@ const Dashboard = () => {
                 width="100%"
                 height="90%"
                 className="overflow-auto"
-                style={{
-                  padding: "20px",
-                }}
+                style={{ padding: "20px" }}
               >
-                <BarChart data={data} barSize={50}>
+                <BarChart data={incomeSourceData} barSize={50}>
                   <XAxis dataKey="name" stroke="#FFFFFF" fontWeight={600} />
                   <Tooltip />
                   <Bar dataKey="value">
                     <LabelList dataKey="value" position="top" fill="#FFFFFF" />
-                    {data.map((entry, index) => (
+                    {incomeSourceData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Bar>
@@ -147,27 +185,18 @@ const Dashboard = () => {
           </motion.div>
         </Stack>
 
-        {/* Card 2 */}
-
-        {/* <h2 className="text-xl font-semibold text-green-400">Revenue</h2>
-          <p className="text-3xl font-bold">$5,430</p> */}
+        {/* Card 2: Spending Line Charts */}
         <Stack
-          sx={{
-            height: "100%",
-            width: "100%",
-          }}
-          direction={"column"}
+          sx={{ height: "100%", width: "100%" }}
+          direction="column"
           gap={2}
         >
           <motion.div
-            style={{
-              height: "50%",
-              width: "100%",
-            }}
+            style={{ height: "50%", width: "100%" }}
             whileHover={{ scale: 1.05 }}
           >
             <Stack
-              direction={"column"}
+              direction="column"
               sx={{
                 height: "100%",
                 width: "100%",
@@ -195,7 +224,7 @@ const Dashboard = () => {
                 $1,200
               </Typography>
               <ResponsiveContainer width="100%" height="70%">
-                <LineChart data={data}>
+                <LineChart data={incomeSourceData}>
                   <Line
                     type="monotone"
                     dataKey="value"
@@ -208,14 +237,11 @@ const Dashboard = () => {
             </Stack>
           </motion.div>
           <motion.div
-            style={{
-              height: "50%",
-              width: "100%",
-            }}
+            style={{ height: "50%", width: "100%" }}
             whileHover={{ scale: 1.05 }}
           >
             <Stack
-              direction={"column"}
+              direction="column"
               sx={{
                 height: "100%",
                 width: "100%",
@@ -243,7 +269,7 @@ const Dashboard = () => {
                 $1,200
               </Typography>
               <ResponsiveContainer width="100%" height="70%">
-                <LineChart data={data}>
+                <LineChart data={incomeSourceData}>
                   <Line
                     type="monotone"
                     dataKey="value"
@@ -257,15 +283,9 @@ const Dashboard = () => {
           </motion.div>
         </Stack>
 
-        {/* Card 3 */}
+        {/* Card 3: Spendings Breakdown */}
         <motion.div whileHover={{ scale: 1.05 }}>
-          <Stack
-            sx={{
-              height: "100%",
-              width: "100%",
-              padding: 1.5,
-            }}
-          >
+          <Stack sx={{ height: "100%", width: "100%", padding: 1.5 }}>
             <Box
               sx={{
                 height: "100%",
@@ -279,12 +299,12 @@ const Dashboard = () => {
                 Spendings
               </Typography>
               <Stack direction="column" spacing={3}>
-                {data2.map((item, index) => (
+                {spendingBreakdown.map((item, index) => (
                   <Stack
+                    key={index}
                     direction="row"
                     alignItems="center"
                     spacing={2}
-                    key={index}
                   >
                     <Box
                       sx={{
@@ -313,6 +333,92 @@ const Dashboard = () => {
             </Box>
           </Stack>
         </motion.div>
+      </div>
+
+      {/* Charts & Goals Section */}
+      <div className="w-full mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Asset Distribution PieChart */}
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col items-center">
+          <h2 className="text-xl font-semibold text-purple-400">
+            Asset Distribution
+          </h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={assetData}
+                cx="50%"
+                cy="50%"
+                innerRadius={80}
+                outerRadius={120}
+                fill="#8884d8"
+                paddingAngle={5}
+                dataKey="value"
+              >
+                {assetData.map((entry, index) => (
+                  <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Income vs Expenses BarChart */}
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col justify-center">
+          <h2 className="text-xl font-semibold text-orange-400">
+            Income vs Expenses
+          </h2>
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={transactions}>
+              <XAxis dataKey="category" stroke="white" />
+              <YAxis stroke="white" />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="amount" fill="#4CAF50" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Recent Transactions */}
+      <div className="w-full mt-8 bg-gray-900 p-6 rounded-lg shadow-lg">
+        <h2 className="text-xl font-semibold text-yellow-400">
+          Recent Transactions
+        </h2>
+        <table className="w-full mt-4">
+          <thead>
+            <tr className="text-left border-b border-gray-700">
+              <th className="p-2">Date</th>
+              <th className="p-2">Category</th>
+              <th className="p-2">Type</th>
+              <th className="p-2">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.map((txn) => (
+              <tr key={txn.id} className="border-b border-gray-700">
+                <td className="p-2">{txn.date}</td>
+                <td className="p-2">{txn.category}</td>
+                <td
+                  className={`p-2 ${txn.type === "Income" ? "text-green-400" : "text-red-400"}`}
+                >
+                  {txn.type}
+                </td>
+                <td className="p-2">${txn.amount}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Notifications */}
+      <div className="w-full mt-8 bg-gray-900 p-6 rounded-lg shadow-lg">
+        <h2 className="text-xl font-semibold text-red-400">
+          Alerts & Notifications
+        </h2>
+        <p className="text-lg text-yellow-300">
+          ⚠ 3 Bills are past due. Pay soon to avoid late fees.
+        </p>
       </div>
     </div>
   );
