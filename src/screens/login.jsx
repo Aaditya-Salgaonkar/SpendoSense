@@ -48,7 +48,7 @@ export default function LoginPage() {
         setTimeout(() => {
           navigate("/dashboard");
           window.location.reload(); // Force refresh to ensure token update
-        }, 1000);
+        }, 1500);
       } else {
         throw new Error("Authentication failed. No session found.");
       }
