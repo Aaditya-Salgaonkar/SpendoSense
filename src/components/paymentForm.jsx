@@ -14,9 +14,11 @@ import PayPalForm from "./payPalForm";
 import GooglePayForm from "./googlePayForm";
 
 const PaymentForm = ({
-  paymentMethod,
+  UPI,
+  setUPI,
   merchantName,
   setMerchantName,
+  paymentMethod,
   googlePayType,
   handlePaymentChange,
   handleGooglePayTypeChange,
@@ -104,12 +106,16 @@ const PaymentForm = ({
         )}
         {paymentMethod === "paypal" && (
           <PayPalForm
+            UPI={UPI}
+            setUPI={setUPI}
             merchantName={merchantName}
             setMerchantName={setMerchantName}
           />
         )}
         {paymentMethod === "googlePay" && (
           <GooglePayForm
+            UPI={UPI}
+            setUPI={setUPI}
             merchantName={merchantName}
             setMerchantName={setMerchantName}
             googlePayType={googlePayType}

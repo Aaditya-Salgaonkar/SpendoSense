@@ -10,6 +10,8 @@ import {
 } from "@mui/material";
 
 const GooglePayForm = ({
+  UPI,
+  setUPI,
   merchantName,
   setMerchantName,
   googlePayType,
@@ -118,6 +120,8 @@ const GooglePayForm = ({
         <TextField
           fullWidth
           label="Phone Number"
+          value={UPI}
+          onChange={(e) => setUPI(e.target.value)}
           placeholder="+1 234 567 8900"
           variant="outlined"
           type="tel"
@@ -128,6 +132,8 @@ const GooglePayForm = ({
         <TextField
           fullWidth
           label="Google Pay ID"
+          value={UPI}
+          onChange={(e) => setUPI(e.target.value)}
           placeholder="johndoe@okicici"
           variant="outlined"
           required

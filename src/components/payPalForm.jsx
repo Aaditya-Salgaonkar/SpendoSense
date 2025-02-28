@@ -18,7 +18,7 @@ const fieldStyles = {
   },
 };
 
-const PayPalForm = ({ merchantName, setMerchantName }) => {
+const PayPalForm = ({ UPI, setUPI, merchantName, setMerchantName }) => {
   return (
     <Box
       sx={{
@@ -47,6 +47,8 @@ const PayPalForm = ({ merchantName, setMerchantName }) => {
         fullWidth
         label="PayPal Email"
         placeholder="you@example.com"
+        value={UPI}
+        onChange={(e) => setUPI(e.target.value)}
         variant="outlined"
         type="email"
         required
