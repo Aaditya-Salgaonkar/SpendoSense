@@ -8,10 +8,11 @@ import { Box } from "@mui/material";
 import supabase from "./db";
 import categories from "./categories";
 
-const COLORS = ["#4CAF50", "#FFC107", "#2196F3", "#FF5722"];
-
 const Expenses = () => {
   const navigate = useNavigate();
+
+  const [userId, setUserId] = useState("");
+  const [total, setTotal] = useState(0);
   const [merchantName, setMerchantName] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [googlePayType, setGooglePayType] = useState("phone");
@@ -22,49 +23,69 @@ const Expenses = () => {
   const [UPI, setUPI] = useState("");
   const [categoryId, setCategoryId] = useState("1e5d4e32-9b42-493a-af2e-dfa17d290255");
 
+  useEffect(() => {
+    const fetchBalance = async () => {
+      const { data: { user }, error: userError } = await supabase.auth._getUser();
+      if (userError || !user) {
+        console.error("No authenticated user found", userError);
+        return;
+      }
+      const { data, error } = await supabase
+        .from("users")
+        .select("totalbalance")
+        .eq("id", user.id)
+        .single();
+      if (error) {
+        console.error("Error fetching balance:", error.message);
+      } else {
+        setTotal(data?.totalbalance || 0);
+      }
+    };
+    fetchBalance();
+  }, [userId]);
+
   function findCategoryByMerchant(merchantName) {
     const lowerMerchant = merchantName.toLowerCase();
     for (const category of categories) {
-      for (const keyword of category.keywords) {
+      for (const keyword of category.keywords) { 
         if (lowerMerchant.includes(keyword)) {
           return category.id;
         }
       }
     }
-    return null
+    return null;
   }
 
   async function addTransaction() {
-    //fetching user data
+    // fetching user data
     const { data: { user }, error: userError } = await supabase.auth._getUser();
     if (userError || !user) {
       console.error("No authenticated user found", userError);
       return;
     }
-    
-    //parsing categories
+    setUserId(user.id);
+
+    // parsing categories
     const cid = findCategoryByMerchant(merchantName);
     console.log(cid);
-    // const finalCategoryId = cid || categoryId
-    var finalCategoryId = categoryId;
+    let finalCategoryId = categoryId;
     if (cid != null) {
       finalCategoryId = cid;
     }
     
-    //inserting into db
+    // inserting into db
     const { data, error } = await supabase
-    .from("transactions")
-    .insert([
-      {
-        userid: user.id,
-        upiid: UPI,
-        amount: Number(amount),
-        merchantName: merchantName,
-        categoryid: finalCategoryId, 
-        transactiontime: new Date().toISOString(),
-      },
-    ]);
-  
+      .from("transactions")
+      .insert([
+        {
+          userid: user.id,
+          upiid: UPI,
+          amount: Number(amount),
+          merchantName: merchantName,
+          categoryid: finalCategoryId, 
+          transactiontime: new Date().toISOString(),
+        },
+      ]);
 
     if (error) {
       console.error("Error inserting transaction:", error);
@@ -73,9 +94,28 @@ const Expenses = () => {
     }
   }
 
+  async function updateBalance() {
+    const { data: { user }, error: userError } = await supabase.auth._getUser();
+    if (userError || !user) {
+      console.error("No authenticated user found", userError);
+      return;
+    }
+    const newBalance = total - amount;
+    const { error } = await supabase
+      .from("users")
+      .update({ totalbalance: newBalance })
+      .eq("id", user.id);
+    if (error) {
+      console.error("Error updating balance:", error.message);
+    } else {
+      setTotal(newBalance);
+    }
+  }
+
   useEffect(() => { 
     if (paymentComplete) {
       addTransaction();
+      updateBalance();
     }
   }, [paymentComplete]);
 
