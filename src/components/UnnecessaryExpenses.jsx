@@ -89,7 +89,7 @@ const UnnecessaryExpenses = () => {
 
   return (
     <div className="bg-gray-900 p-5 rounded-lg shadow-sm shadow-white text-white h-1/3 w-1/3">
-      <h2 className="text-xl font-bold mb-4 px-14">Unnecessary Expenses</h2>
+      <h2 className="text-xl font-bold mb-4 mt-3 px-14 text-center py-4-">Unnecessary Expenses</h2>
 
       {loading ? (
         <p>Loading...</p>

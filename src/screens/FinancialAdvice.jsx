@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import BudgetingCard from "@/components/BudgetingCard";
 import UnnecessaryExpenses from "@/components/UnnecessaryExpenses";
 import { supabase } from "@/supabase";
+import GroupedBarChart from "@/components/GroupedBarChart";
 
 const FinancialAdvice = () => {
   const [balance, setBalance] = useState(null);
@@ -45,10 +46,12 @@ const FinancialAdvice = () => {
       </h1>
       <div className="min-h-screen flex flex-row justify-between bg-[#0a0f1c] p-10 h-full w-full">
         {/* Unnecessary Expenses --> Show a pie chart */}
-        <UnnecessaryExpenses />
+        <UnnecessaryExpenses /> 
+        <GroupedBarChart />
         <div className="bg-[#0a0f1c] text-white px-6">
           <BudgetingCard />
         </div>
+       
       </div>
     </>
   );
