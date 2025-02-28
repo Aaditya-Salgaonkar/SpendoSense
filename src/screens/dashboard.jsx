@@ -122,6 +122,7 @@ const Dashboard = () => {
   const [categories, setCategories] = useState([]);
 
   const [spendingBreakdown, setSpendingBreakdown] = useState([]);
+  const [incomeSourceData, setIncomeSourceData] = useState([]);
 
   const categoryMap = [
     {
@@ -167,7 +168,7 @@ const Dashboard = () => {
 
             if (error) {
               console.error(
-                `Error fetching ${category.label} transactions:`,
+                `Error fetching ${category.label} transactions: or`,
                 error
               );
               return { ...category, amount: "$0.00" };
@@ -197,8 +198,21 @@ const Dashboard = () => {
           })
         );
 
+        const { data2, error2 } = await supabase
+          .from("income")
+          .select("amount, created_at")
+          .order("created_at", { ascending: true });
+
+        if (error2) throw error2;
+
+        const formattedData = data2.map((item) => ({
+          value: item.amount,
+          date: new Date(item.created_at).toLocaleDateString(),
+        }));
+
         console.log("Final spending breakdown:", breakdownData);
         setSpendingBreakdown(breakdownData);
+        setIncomeSourceData(formattedData);
       } catch (error) {
         console.error("Error fetching spending breakdown:", error);
       }
