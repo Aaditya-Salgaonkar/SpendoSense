@@ -34,7 +34,7 @@ export default function SignUpPage() {
       // Insert user into freelancer table
       if (data.user) {
         const { error: dbError } = await supabase
-          .from("freelancer")
+          .from("users")
           .upsert({ id: data.user.id, email: formData.email, name: formData.fullname });
 
         if (dbError) throw dbError;
