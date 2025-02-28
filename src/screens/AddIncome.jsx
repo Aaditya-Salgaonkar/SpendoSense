@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 const AddIncome = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+ 
     source: "",
     amount: "",
     created_at: new Date().toISOString().slice(0, 16), // Default to current time
@@ -21,75 +22,73 @@ const AddIncome = () => {
       alert("Please fill in all required fields.");
       return;
     }
-
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
+  
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
       console.error("Error fetching user:", authError);
       return;
     }
-
+  
     try {
       // Insert income record into the database, with isincome set to true
-      const { data: incomeData, error: incomeError } = await supabase
-        .from("income")
-        .insert([
-          {
-            source: formData.source,
-            amount: parseFloat(formData.amount),
-            created_at: formData.created_at,
-            userId: user.id, // Link this income to the logged-in user
-            isincome: true, // Always true for income
-          },
-        ]);
-
+      const { data: incomeData, error: incomeError } = await supabase.from("income").insert([
+        {
+          source: formData.source,
+          amount: parseFloat(formData.amount),
+          created_at: formData.created_at,
+          userId: user.id, // Link this income to the logged-in user
+          isincome: true,  // Always true for income
+        },
+      ]);
+  
       if (incomeError) {
         console.error("Error adding income:", incomeError.message);
         alert(`Error adding income: ${incomeError.message}`);
         return;
       }
-
+  
       // Fetch the user's current balance
       const { data: userData, error: userError } = await supabase
         .from("users")
         .select("totalbalance")
         .eq("id", user.id)
         .single();
-
+  
       if (userError || !userData) {
         console.error("Error fetching user data:", userError);
         return;
       }
-
+  
       // Calculate the new balance
       const newBalance = userData.totalbalance + parseFloat(formData.amount);
-
+  
       // Update the user's total balance
       const { error: updateError } = await supabase
         .from("users")
         .update({ totalbalance: newBalance })
         .eq("id", user.id);
-
+  
       if (updateError) {
         console.error("Error updating balance:", updateError.message);
         return;
       }
-
+  
       alert("Income added successfully!");
       setFormData({
         source: "",
         amount: "",
         createdAt: new Date().toISOString().slice(0, 16),
       });
-
+  
       navigate(-1); // Navigate back after successful submission
     } catch (err) {
       console.error("Unexpected error:", err);
       alert(`Unexpected error: ${err.message}`);
     }
   };
+  
+  
+  
 
   return (
     <div className="flex h-screen items-center justify-center p-10 bg-[#0a0f1c]">
@@ -123,7 +122,7 @@ const AddIncome = () => {
             className="p-2 border rounded hover:border-green-400"
             required
           />
-
+        
           <input
             type="number"
             name="amount"

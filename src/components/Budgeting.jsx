@@ -24,7 +24,9 @@ const Budgeting = () => {
       <Card className="w-[350px] bg-[#101628] text-white">
         <CardHeader>
           <CardTitle>Create project</CardTitle>
-          <CardDescription>Deploy your new project in one-click.</CardDescription>
+          <CardDescription>
+            Deploy your new project in one-click.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form>
@@ -51,7 +53,9 @@ const Budgeting = () => {
           </form>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button variant="outline" className="text-black">Cancel</Button>
+          <Button variant="outline" className="text-black">
+            Cancel
+          </Button>
           <Button>Deploy</Button>
         </CardFooter>
       </Card>

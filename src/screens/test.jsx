@@ -102,56 +102,56 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(true);
   const [users, setUsers] = useState([]);
-    const [transactions, setTransactions] = useState([]);
-    const [budgets, setBudgets] = useState([]);
-    const [analytics, setAnalytics] = useState([]);
-    const [financialAdvice, setFinancialAdvice] = useState([]);
-    const [categories, setCategories] = useState([]);
-  
-    useEffect(() => {
-      fetchUsers();
-      fetchTransactions();
-      fetchBudgets();
-      fetchAnalytics();
-      fetchFinancialAdvice();
-      fetchCategories();
-    }, []);
-  
-    async function fetchUsers() {
-      let { data, error } = await supabase.from("users").select("*");
-      if (error) console.error("Error fetching users:", error);
-      else setUsers(data);
-    }
-  
-    async function fetchTransactions() {
-      let { data, error } = await supabase.from("transactions").select("*");
-      if (error) console.error("Error fetching transactions:", error);
-      else setTransactions(data);
-    }
-  
-    async function fetchBudgets() {
-      let { data, error } = await supabase.from("budgets").select("*");
-      if (error) console.error("Error fetching budgets:", error);
-      else setBudgets(data);
-    }
-  
-    async function fetchAnalytics() {
-      let { data, error } = await supabase.from("analytics").select("*");
-      if (error) console.error("Error fetching analytics:", error);
-      else setAnalytics(data);
-    }
-  
-    async function fetchFinancialAdvice() {
-      let { data, error } = await supabase.from("financialadvice").select("*");
-      if (error) console.error("Error fetching financial advice:", error);
-      else setFinancialAdvice(data);
-    }
-  
-    async function fetchCategories() {
-      let { data, error } = await supabase.from("categories").select("*");
-      if (error) console.error("Error fetching categories:", error);
-      else setCategories(data);
-    }
+  const [transactions, setTransactions] = useState([]);
+  const [budgets, setBudgets] = useState([]);
+  const [analytics, setAnalytics] = useState([]);
+  const [financialAdvice, setFinancialAdvice] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetchUsers();
+    fetchTransactions();
+    fetchBudgets();
+    fetchAnalytics();
+    fetchFinancialAdvice();
+    fetchCategories();
+  }, []);
+
+  async function fetchUsers() {
+    let { data, error } = await supabase.from("users").select("*");
+    if (error) console.error("Error fetching users:", error);
+    else setUsers(data);
+  }
+
+  async function fetchTransactions() {
+    let { data, error } = await supabase.from("transactions").select("*");
+    if (error) console.error("Error fetching transactions:", error);
+    else setTransactions(data);
+  }
+
+  async function fetchBudgets() {
+    let { data, error } = await supabase.from("budgets").select("*");
+    if (error) console.error("Error fetching budgets:", error);
+    else setBudgets(data);
+  }
+
+  async function fetchAnalytics() {
+    let { data, error } = await supabase.from("analytics").select("*");
+    if (error) console.error("Error fetching analytics:", error);
+    else setAnalytics(data);
+  }
+
+  async function fetchFinancialAdvice() {
+    let { data, error } = await supabase.from("financialadvice").select("*");
+    if (error) console.error("Error fetching financial advice:", error);
+    else setFinancialAdvice(data);
+  }
+
+  async function fetchCategories() {
+    let { data, error } = await supabase.from("categories").select("*");
+    if (error) console.error("Error fetching categories:", error);
+    else setCategories(data);
+  }
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     navigate("/login");

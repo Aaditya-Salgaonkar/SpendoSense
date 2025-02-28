@@ -25,6 +25,9 @@ import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import PeopleIcon from "@mui/icons-material/People";
+import IncomeCard from "@/components/IncomeCard";
+import RecentTransactions from "@/components/RecentTransaction";
+import IncomeVsExpenses from "@/components/IE";
 
 const COLORS = ["#4CAF50", "#FFC107", "#2196F3", "#FF5722"];
 
@@ -34,12 +37,12 @@ const topStats = [
   { title: "Total Spendings", value: "$9,228", color: "text-yellow-300" },
 ];
 
-const incomeSourceData = [
-  { name: "E-commerce", value: 2100, color: "#FFFFFF" },
-  { name: "Google Adsense", value: 950, color: "#FF4D4D" },
-  { name: "My Shop", value: 8000, color: "#FFFFFF" },
-  { name: "Salary", value: 13000, color: "#00D084" },
-];
+// const incomeSourceData = [
+//   { name: "E-commerce", value: 2100, color: "#FFFFFF" },
+//   { name: "Google Adsense", value: 950, color: "#FF4D4D" },
+//   { name: "My Shop", value: 8000, color: "#FFFFFF" },
+//   { name: "Salary", value: 13000, color: "#00D084" },
+// ];
 
 // const spendingBreakdown = [
 //   {
@@ -106,7 +109,7 @@ const transactions = [
   },
 ];
 
-const Dashboard = () => {
+const Dashboard = ({ token }) => {
   const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(true);
   const [users, setUsers] = useState([]);
@@ -122,7 +125,10 @@ const Dashboard = () => {
   const [categories, setCategories] = useState([]);
 
   const [spendingBreakdown, setSpendingBreakdown] = useState([]);
-  const [incomeSourceData, setIncomeSourceData] = useState([]);
+  const [incomeSourceDataForGraph, setIncomeSourceDataForGraph] = useState([]);
+  const [incomeSourceDataForGraph2, setIncomeSourceDataForGraph2] = useState(
+    []
+  );
 
   const categoryMap = [
     {
@@ -154,13 +160,8 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchSpendingBreakdown = async () => {
       try {
-        console.log("Fetching spending breakdown...");
         const breakdownData = await Promise.all(
           categoryMap.map(async (category) => {
-            console.log(
-              `Fetching transactions for category: ${category.label} (ID: ${category.id})`
-            );
-
             const { data, error } = await supabase
               .from("transactions")
               .select("amount")
@@ -168,28 +169,21 @@ const Dashboard = () => {
 
             if (error) {
               console.error(
-                `Error fetching ${category.label} transactions: or`,
+                `Error fetching ${category.label} transactions:`,
                 error
               );
               return { ...category, amount: "$0.00" };
             }
 
-            console.log(`Fetched transactions for ${category.label}:`, data);
-
             const totalAmount = data.reduce(
               (sum, txn) => sum + parseFloat(txn.amount),
               0
             );
-            console.log(`Total amount for ${category.label}: ${totalAmount}`);
 
             const formattedAmount = `$${totalAmount.toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}`;
-
-            console.log(
-              `Formatted amount for ${category.label}: ${formattedAmount}`
-            );
 
             return {
               ...category,
@@ -198,27 +192,111 @@ const Dashboard = () => {
           })
         );
 
-        const { data2, error2 } = await supabase
-          .from("income")
-          .select("amount, created_at")
-          .order("created_at", { ascending: true });
-
-        if (error2) throw error2;
-
-        const formattedData = data2.map((item) => ({
-          value: item.amount,
-          date: new Date(item.created_at).toLocaleDateString(),
-        }));
-
-        console.log("Final spending breakdown:", breakdownData);
         setSpendingBreakdown(breakdownData);
-        setIncomeSourceData(formattedData);
       } catch (error) {
         console.error("Error fetching spending breakdown:", error);
       }
     };
 
     fetchSpendingBreakdown();
+  }, []);
+
+  useEffect(() => {
+    console.log("Fetching income data...");
+
+    const fetchIncomeData = async () => {
+      try {
+        const {
+          data: { user },
+          error: useError,
+        } = await supabase.auth._getUser();
+        console.log("Fetching income data...");
+        const { data, error } = await supabase
+          .from("income")
+          .select("amount, created_at")
+          .eq("userId", user.id)
+          .order("created_at", { ascending: true });
+
+        if (error) throw error;
+
+        console.log("Fetched income data:", data);
+
+        const formattedData = data.map((item) => ({
+          value: item.amount,
+          date: new Date(item.created_at).toLocaleDateString(),
+        }));
+
+        console.log("Formatted income data:", formattedData);
+        setIncomeSourceDataForGraph(formattedData);
+      } catch (err) {
+        console.error("Error fetching income data:", err.message);
+      }
+    };
+
+    const fetchSpendData = async () => {
+      try {
+        const {
+          data: { user },
+          error: useError,
+        } = await supabase.auth._getUser();
+        console.log("Fetching spend data...");
+        const { data, error } = await supabase
+          .from("transactions")
+          .select("amount, transactiontime")
+          .eq("userid", user.id)
+          .order("transactiontime", { ascending: true });
+
+        if (error) throw error;
+
+        console.log("Fetched spend data:", data);
+
+        const formattedSpendData = data.map((item) => ({
+          value: item.amount,
+          date: new Date(item.transactiontime).toLocaleDateString(),
+        }));
+
+        console.log(
+          "---------------------Formatted spend data:",
+          formattedSpendData
+        );
+        setIncomeSourceDataForGraph2(formattedSpendData);
+      } catch (err) {
+        console.error("Error fetching spend data:", err.message);
+      }
+    };
+
+    fetchIncomeData();
+    fetchSpendData();
+  }, []);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+
+        const { data, error } = await supabase.from("categories").select("*");
+
+        if (error) {
+          console.error("Error fetching categories:", error);
+
+          return;
+        }
+
+        if (Array.isArray(data)) {
+          setCategories(data);
+
+          setLoading(false);
+        } else {
+          console.warn("Unexpected data format:", data);
+
+          setCategories([]);
+        }
+      } catch (err) {
+        console.error("Unexpected error fetching categories:", err);
+      }
+    };
+
+    fetchCategories();
   }, []);
 
   return (
@@ -235,71 +313,8 @@ const Dashboard = () => {
       {/* Combined Cards Section */}
       <div className="w-full mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Card 1: Net Worth & Income Source */}
-        <Stack
-          direction="column"
-          gap={2}
-          sx={{ height: "100%", width: "100%" }}
-        >
-          <motion.div
-            style={{ height: "30%", width: "100%" }}
-            whileHover={{ scale: 1.05 }}
-          >
-            <Stack
-              direction="column"
-              spacing={1}
-              pt={2}
-              pl={3}
-              sx={{
-                height: "100%",
-                width: "100%",
-                borderRadius: "20px",
-                background: "linear-gradient(90deg, #FF7F50, #FF4500)",
-              }}
-            >
-              <Typography fontSize={32} fontWeight={600}>
-                Total Networth
-              </Typography>
-              <Typography fontSize={32} fontWeight={600}>
-                $278,378
-              </Typography>
-            </Stack>
-          </motion.div>
-          <motion.div
-            style={{ height: "70%", width: "100%" }}
-            whileHover={{ scale: 1.05 }}
-          >
-            <Box
-              sx={{
-                height: "100%",
-                width: "100%",
-                backgroundColor: "#171c3a",
-                borderRadius: "20px",
-              }}
-            >
-              <h2 className="text-white text-xl mb-4 ml-5 pt-2">
-                Income Source
-              </h2>
-              <ResponsiveContainer
-                width="100%"
-                height="90%"
-                className="overflow-auto"
-                style={{ padding: "20px" }}
-              >
-                <BarChart data={incomeSourceData} barSize={50}>
-                  <XAxis dataKey="name" stroke="#FFFFFF" fontWeight={600} />
-                  <Tooltip />
-                  <Bar dataKey="value">
-                    <LabelList dataKey="value" position="top" fill="#FFFFFF" />
-                    {incomeSourceData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </Box>
-          </motion.div>
-        </Stack>
 
+        <IncomeCard token={token} />
         {/* Card 2: Spending Line Charts */}
         <Stack
           sx={{ height: "100%", width: "100%" }}
@@ -327,7 +342,7 @@ const Dashboard = () => {
                 textAlign="left"
                 ml={3}
               >
-                Spending
+                Income
               </Typography>
               <Typography
                 fontSize={24}
@@ -336,10 +351,13 @@ const Dashboard = () => {
                 textAlign="left"
                 ml={3}
               >
-                $1,200
+                ₹
+                {incomeSourceDataForGraph
+                  .reduce((sum, item) => sum + parseFloat(item.value), 0)
+                  .toLocaleString(undefined, { minimumFractionDigits: 2 })}
               </Typography>
               <ResponsiveContainer width="100%" height="70%">
-                <LineChart data={incomeSourceData}>
+                <LineChart data={incomeSourceDataForGraph}>
                   <Line
                     type="monotone"
                     dataKey="value"
@@ -381,10 +399,13 @@ const Dashboard = () => {
                 textAlign="left"
                 ml={3}
               >
-                $1,200
+                ₹
+                {incomeSourceDataForGraph2
+                  .reduce((sum, item) => sum + parseFloat(item.value), 0)
+                  .toLocaleString(undefined, { minimumFractionDigits: 2 })}
               </Typography>
               <ResponsiveContainer width="100%" height="70%">
-                <LineChart data={incomeSourceData}>
+                <LineChart data={incomeSourceDataForGraph2}>
                   <Line
                     type="monotone"
                     dataKey="value"
@@ -479,52 +500,11 @@ const Dashboard = () => {
         </div>
 
         {/* Income vs Expenses BarChart */}
-        <div className="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col justify-center">
-          <h2 className="text-xl font-semibold text-orange-400">
-            Income vs Expenses
-          </h2>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={transactions}>
-              <XAxis dataKey="category" stroke="white" />
-              <YAxis stroke="white" />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="amount" fill="#4CAF50" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        <IncomeVsExpenses />
       </div>
 
       {/* Recent Transactions */}
-      <div className="w-full mt-8 bg-gray-900 p-6 rounded-lg shadow-lg">
-        <h2 className="text-xl font-semibold text-yellow-400">
-          Recent Transactions
-        </h2>
-        <table className="w-full mt-4">
-          <thead>
-            <tr className="text-left border-b border-gray-700">
-              <th className="p-2">Date</th>
-              <th className="p-2">Category</th>
-              <th className="p-2">Type</th>
-              <th className="p-2">Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map((txn) => (
-              <tr key={txn.id} className="border-b border-gray-700">
-                <td className="p-2">{txn.date}</td>
-                <td className="p-2">{txn.category}</td>
-                <td
-                  className={`p-2 ${txn.type === "Income" ? "text-green-400" : "text-red-400"}`}
-                >
-                  {txn.type}
-                </td>
-                <td className="p-2">${txn.amount}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <RecentTransactions />
 
       {/* Notifications */}
       <div className="w-full mt-8 bg-gray-900 p-6 rounded-lg shadow-lg">

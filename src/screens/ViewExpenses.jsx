@@ -19,7 +19,8 @@ const ExpensesList = () => {
 
   useEffect(() => {
     const fetchExpenses = async () => {
-      const { data: userData, error: userError } = await supabase.auth.getUser();
+      const { data: userData, error: userError } =
+        await supabase.auth.getUser();
       if (userError || !userData?.user) {
         console.error("Error fetching user:", userError);
         setLoading(false);
@@ -60,10 +61,18 @@ const ExpensesList = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell><strong>Merchant</strong></TableCell>
-                <TableCell><strong>Amount (₹)</strong></TableCell>
-                <TableCell><strong>Category</strong></TableCell>
-                <TableCell><strong>Date</strong></TableCell>
+                <TableCell>
+                  <strong>Merchant</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Amount (₹)</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Category</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Date</strong>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -71,8 +80,12 @@ const ExpensesList = () => {
                 <TableRow key={expense.id}>
                   <TableCell>{expense.merchantName}</TableCell>
                   <TableCell>₹{expense.amount}</TableCell>
-                  <TableCell>{expense.categories?.name || "Uncategorized"}</TableCell>
-                  <TableCell>{new Date(expense.transactiontime).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    {expense.categories?.name || "Uncategorized"}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(expense.transactiontime).toLocaleDateString()}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

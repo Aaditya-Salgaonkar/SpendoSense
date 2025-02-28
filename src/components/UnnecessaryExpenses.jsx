@@ -16,7 +16,8 @@ const UnnecessaryExpenses = () => {
       setLoading(true);
 
       // 1️⃣ Get the logged-in user ID
-      const { data: userData, error: userError } = await supabase.auth.getUser();
+      const { data: userData, error: userError } =
+        await supabase.auth.getUser();
       if (userError || !userData?.user) {
         console.error("Error fetching user:", userError);
         setLoading(false);
@@ -48,34 +49,41 @@ const UnnecessaryExpenses = () => {
       // 3️⃣ Fetch transactions where category_id is in the unnecessary category list
       const categoryIds = categoryData.map((category) => category.id);
 
-      const { data: transactionsData, error: transactionsError } = await supabase
-        .from("transactions")
-        .select("amount, categoryid")
-        .eq("userid", currentUserId)
-        .in("categoryid", categoryIds);
+      const { data: transactionsData, error: transactionsError } =
+        await supabase
+          .from("transactions")
+          .select("amount, categoryid")
+          .eq("userid", currentUserId)
+          .in("categoryid", categoryIds);
 
       if (transactionsError) {
         console.error("Error fetching transactions:", transactionsError);
       } else {
         // 🔥 Step 4: Aggregate Transactions by Category (Sum Total Amounts)
         let totalSum = 0; // ✅ Variable to store total sum
-        const groupedTransactions = transactionsData.reduce((acc, transaction) => {
-          const categoryName = categoryMapObject[transaction.categoryid] || "Other";
+        const groupedTransactions = transactionsData.reduce(
+          (acc, transaction) => {
+            const categoryName =
+              categoryMapObject[transaction.categoryid] || "Other";
 
-          if (!acc[categoryName]) {
-            acc[categoryName] = 0;
-          }
-          acc[categoryName] += transaction.amount;
-          totalSum += transaction.amount; // ✅ Add to total sum
+            if (!acc[categoryName]) {
+              acc[categoryName] = 0;
+            }
+            acc[categoryName] += transaction.amount;
+            totalSum += transaction.amount; // ✅ Add to total sum
 
-          return acc;
-        }, {});
+            return acc;
+          },
+          {}
+        );
 
         // 🔹 Convert grouped data into array format for Recharts
-        const formattedChartData = Object.keys(groupedTransactions).map((categoryName) => ({
-          name: categoryName,
-          value: groupedTransactions[categoryName],
-        }));
+        const formattedChartData = Object.keys(groupedTransactions).map(
+          (categoryName) => ({
+            name: categoryName,
+            value: groupedTransactions[categoryName],
+          })
+        );
 
         setTransactions(formattedChartData); // ✅ Store aggregated transactions
         setTotalAmount(totalSum); // ✅ Store total amount wasted
@@ -89,7 +97,9 @@ const UnnecessaryExpenses = () => {
 
   return (
     <div className="bg-gray-900 p-5 rounded-lg shadow-sm shadow-white text-white h-1/3 w-1/3">
-      <h2 className="text-xl font-bold mb-4 mt-3 px-14 text-center py-4-">Unnecessary Expenses</h2>
+      <h2 className="text-xl font-bold mb-4 mt-3 px-14 text-center py-4-">
+        Unnecessary Expenses
+      </h2>
 
       {loading ? (
         <p>Loading...</p>
@@ -108,14 +118,19 @@ const UnnecessaryExpenses = () => {
               label
             >
               {transactions.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
               ))}
             </Pie>
             <Tooltip />
             <Legend />
-          </PieChart> 
+          </PieChart>
           {/* ✅ Display Total Amount Wasted */}
-          <h2 className="text-xl font-bold mt-4 px-14">Total Amount Wasted: ₹{totalAmount}</h2>
+          <h2 className="text-xl font-bold mt-4 px-14">
+            Total Amount Wasted: ₹{totalAmount}
+          </h2>
         </div>
       )}
     </div>

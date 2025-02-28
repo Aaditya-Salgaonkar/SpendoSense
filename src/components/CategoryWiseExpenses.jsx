@@ -25,7 +25,8 @@ const CategoryWiseExpenses = () => {
 
   useEffect(() => {
     const fetchCategoryWiseExpenses = async () => {
-      const { data: userData, error: authError } = await supabase.auth.getUser();
+      const { data: userData, error: authError } =
+        await supabase.auth.getUser();
       const user = userData?.user;
 
       if (!user || authError) {
@@ -62,15 +63,34 @@ const CategoryWiseExpenses = () => {
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", px: 5, m: 2, pt: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          px: 5,
+          m: 2,
+          pt: 2,
+        }}
+      >
         <Typography variant="h4" fontWeight="bold" gutterBottom>
           Expenses
         </Typography>
         {chartData.length > 0 ? (
           <PieChart width={500} height={500}>
-            <Pie data={chartData} cx={250} cy={250} outerRadius={150} dataKey="value" label>
+            <Pie
+              data={chartData}
+              cx={250}
+              cy={250}
+              outerRadius={150}
+              dataKey="value"
+              label
+            >
               {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
               ))}
             </Pie>
             <Tooltip />

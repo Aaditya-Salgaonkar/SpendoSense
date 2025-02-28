@@ -1,9 +1,16 @@
-import React from 'react';
-import spinnerGif from '../assets/loading-gif-blue.gif';
+import React from "react";
+import spinnerGif from "../assets/s.gif";
 
-const Spinner = ({top="15%"}) => {
+const Spinner = ({ top = "15%" }) => {
   return (
-    <div style={{ marginTop: top,display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    <div
+      style={{
+        marginTop: top,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <img src={spinnerGif} alt="Loading..." width={100} height={100} />
     </div>
   );

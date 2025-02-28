@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/supabase";
 import { Button } from "@/components/ui/button";
-import { DashboardRounded, Insights, Wallet } from "@mui/icons-material";
+import { DashboardRounded, Insights, Money, Wallet } from "@mui/icons-material";
+import { Coins } from "lucide-react";
 
 const HomeNav = () => {
   const navigate = useNavigate();
@@ -39,8 +40,11 @@ const HomeNav = () => {
   }, []);
 
   const handleLogout = async () => {
+    // Remove token from session storage on logout
+    sessionStorage.removeItem('token');
+    // Perform logout action in Supabase
     await supabase.auth.signOut();
-    navigate("/login");
+    navigate("/landingpage");
   };
 
   return (
@@ -63,6 +67,10 @@ const HomeNav = () => {
         <Button className="flex gap-1 bg-[#0d0d51] p-2 rounded-lg ml-5" onClick={() => navigate('/insights')}>
           <Insights />
           <p className="text-white font-semibold">Insights</p>
+        </Button>
+        <Button className="flex gap-1 bg-[#0d0d51] p-2 rounded-lg ml-5" onClick={() => navigate('/income')}>
+          <Coins />
+          <p className="text-white font-semibold">Income</p>
         </Button>
       </div>
 

@@ -7,7 +7,9 @@ import LandingPage from "./screens/LandingPage";
 import Expenses from "./screens/expenses";
 import Insights from "./screens/insights";
 import AddExpense from "./screens/AddExpense";
-
+import Income from "./screens/Income";
+import AddIncome from "./screens/AddIncome";
+import HomeNav from "./components/HomeNav";
 const App = () => {
   const [token, setToken] = useState(sessionStorage.getItem("token") || null);
 
@@ -22,6 +24,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/landingpage" element={<LandingPage />} />
         <Route
           path="/"
           element={token ? <Navigate to="/dashboard" /> : <LandingPage />}
@@ -47,9 +50,19 @@ const App = () => {
           }
         />
         <Route
+          path="/income"
+          element={token ? <Income token={token} /> : <Navigate to="/login" />}
+        />
+        <Route
           path="/addexpense"
           element={
             token ? <AddExpense token={token} /> : <Navigate to="/login" />
+          }
+        />
+        <Route
+          path="/addincome"
+          element={
+            token ? <AddIncome token={token} /> : <Navigate to="/login" />
           }
         />
       </Routes>

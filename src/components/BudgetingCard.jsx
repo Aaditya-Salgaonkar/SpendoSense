@@ -3,12 +3,7 @@ import { supabase } from "../supabase"; // Ensure the correct import path
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -36,7 +31,8 @@ const BudgetingDialog = () => {
   // Fetch Categories and User ID
   useEffect(() => {
     const fetchCategories = async () => {
-      const { data: userData, error: userError } = await supabase.auth.getUser();
+      const { data: userData, error: userError } =
+        await supabase.auth.getUser();
       if (userError || !userData?.user) {
         console.error("Error fetching user:", userError);
         setLoading(false);
@@ -46,7 +42,9 @@ const BudgetingDialog = () => {
       const currentUserId = userData.user.id;
       setUserId(currentUserId);
 
-      const { data, error } = await supabase.from("categories").select("id, name");
+      const { data, error } = await supabase
+        .from("categories")
+        .select("id, name");
 
       if (error) {
         console.error("Error fetching categories:", error);
@@ -88,7 +86,10 @@ const BudgetingDialog = () => {
   return (
     <>
       {/* Button to Open Dialog */}
-      <Button className="top-10 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md" onClick={() => setOpen(true)}>
+      <Button
+        className="top-10 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md"
+        onClick={() => setOpen(true)}
+      >
         + Add Budget
       </Button>
 
@@ -97,19 +98,24 @@ const BudgetingDialog = () => {
         <DialogContent className="bg-[#101628] text-white">
           <DialogHeader>
             <DialogTitle>Create a Budget</DialogTitle>
-            <DialogDescription>Set targets for monitoring your expenses.</DialogDescription>
+            <DialogDescription>
+              Set targets for monitoring your expenses.
+            </DialogDescription>
           </DialogHeader>
-          
+
           <CardContent>
             <form>
               <div className="grid w-full items-center gap-4">
-                
                 {/* Category Selection */}
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="categories">Category</Label>
                   <Select onValueChange={setSelectedCategory}>
                     <SelectTrigger id="categories">
-                      <SelectValue placeholder={loading ? "Loading..." : "Select a category"} />
+                      <SelectValue
+                        placeholder={
+                          loading ? "Loading..." : "Select a category"
+                        }
+                      />
                     </SelectTrigger>
                     <SelectContent position="popper">
                       {categories.length > 0 ? (
@@ -130,16 +136,27 @@ const BudgetingDialog = () => {
                 {/* Amount Input */}
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="amount">Amount</Label>
-                  <Input id="amount" placeholder="Enter the amount" type="number" value={amount} onChange={(e) => setAmount(e.target.value)} />
+                  <Input
+                    id="amount"
+                    placeholder="Enter the amount"
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                  />
                 </div>
-
               </div>
             </form>
           </CardContent>
 
           {/* Dialog Footer */}
           <DialogFooter className="flex justify-end">
-            <Button variant="outline" className='text-black' onClick={() => setOpen(false)}>Cancel</Button>
+            <Button
+              variant="outline"
+              className="text-black"
+              onClick={() => setOpen(false)}
+            >
+              Cancel
+            </Button>
             <Button onClick={handleSaveBudget}>Save Budget</Button>
           </DialogFooter>
         </DialogContent>
