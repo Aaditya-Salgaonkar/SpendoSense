@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import PaymentForm from "./components/paymentForm";
-import PaymentModal from "./components/paymentModal";
-import PaymentConfirmation from "./components/paymentConfirmation";
+import PaymentForm from "../components/paymentForm";
+import PaymentModal from "../components/paymentModal";
+import PaymentConfirmation from "../components/paymentConfirmation";
 import "./styles.css";
 
 function App() {
@@ -59,6 +59,8 @@ function App() {
           />
           <PaymentModal
             show={modal}  
+            merchantName={merchantName}
+            setMerchantName={setMerchantName}
             amount={amount}
             paymentStatus={paymentStatus}
             setAmount={setAmount}
