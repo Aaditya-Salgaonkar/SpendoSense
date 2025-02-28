@@ -10,6 +10,8 @@ import AddExpense from "./screens/AddExpense";
 import Income from "./screens/Income";
 import AddIncome from "./screens/AddIncome";
 import HomeNav from "./components/HomeNav";
+import PaymentForm from "./components/paymentForm";
+
 const App = () => {
   const [token, setToken] = useState(sessionStorage.getItem("token") || null);
 
@@ -64,6 +66,10 @@ const App = () => {
           element={
             token ? <AddIncome token={token} /> : <Navigate to="/login" />
           }
+        />
+        <Route
+          path="/payment"
+          element={token ? <PaymentForm /> : <Navigate to="/login" />}
         />
       </Routes>
     </BrowserRouter>
