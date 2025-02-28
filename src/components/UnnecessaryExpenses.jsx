@@ -88,7 +88,7 @@ const UnnecessaryExpenses = () => {
   }, []);
 
   return (
-    <div className="bg-gray-900 p-5 rounded-lg shadow-sm shadow-white text-white h-1/3 w-1/3">
+    <div className="bg-gray-900 p-5 rounded-lg shadow-sm shadow-white text-white h-[480px] w-1/2 border border-white ">
       <h2 className="text-xl font-bold mb-4 mt-3 px-14 text-center py-4-">Unnecessary Expenses</h2>
 
       {loading ? (
@@ -115,7 +115,7 @@ const UnnecessaryExpenses = () => {
             <Legend />
           </PieChart> 
           {/* ✅ Display Total Amount Wasted */}
-          <h2 className="text-xl font-bold mt-4 px-14">Total Amount Wasted: ₹{totalAmount}</h2>
+          <h2 className="text-xl font-bold mt-4 px-14 text-white">Total Amount Wasted: ₹{totalAmount}</h2>
         </div>
       )}
     </div>

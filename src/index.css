@@ -4,6 +4,7 @@
 @tailwind utilities;
 body{
   font-family: "Poppins", sans-serif;
+  background-color: #0a0f1c;
 }
 
 @layer base {
