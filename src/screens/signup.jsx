@@ -8,7 +8,11 @@ import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 export default function SignUpPage() {
-  const [formData, setFormData] = useState({ fullname: "", email: "", password: "" });
+  const [formData, setFormData] = useState({
+    fullname: "",
+    email: "",
+    password: "",
+  });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -33,9 +37,11 @@ export default function SignUpPage() {
 
       // Insert user into freelancer table
       if (data.user) {
-        const { error: dbError } = await supabase
-          .from("freelancer")
-          .upsert({ id: data.user.id, email: formData.email, name: formData.fullname });
+        const { error: dbError } = await supabase.from("users").upsert({
+          id: data.user.id,
+          email: formData.email,
+          name: formData.fullname,
+        });
 
         if (dbError) throw dbError;
       }
@@ -51,7 +57,7 @@ export default function SignUpPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0a0f1c] text-white px-6">
-      <motion.div 
+      <motion.div
         className="w-full max-w-md bg-gray-900 p-8 rounded-lg shadow-lg"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -60,7 +66,9 @@ export default function SignUpPage() {
         <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-blue-400 to-purple-600 text-transparent bg-clip-text">
           Create an Account
         </h2>
-        <p className="mt-2 text-gray-400 text-center">Join us and manage your finances effortlessly.</p>
+        <p className="mt-2 text-gray-400 text-center">
+          Join us and manage your finances effortlessly.
+        </p>
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
           {/* Name Input */}

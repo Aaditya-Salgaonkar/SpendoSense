@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import PayPalButton from "./RazorPay";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -35,6 +36,8 @@ const Dashboard = () => {
           <p className="text-3xl font-bold">1,254</p>
         </motion.div>
 
+        <PayPalButton />
+
         {/* Card 2 */}
         <motion.div
           className="p-6 bg-gray-800 shadow-lg rounded-xl text-center"
@@ -49,7 +52,9 @@ const Dashboard = () => {
           className="p-6 bg-gray-800 shadow-lg rounded-xl text-center"
           whileHover={{ scale: 1.05 }}
         >
-          <h2 className="text-xl font-semibold text-yellow-400">Active Sessions</h2>
+          <h2 className="text-xl font-semibold text-yellow-400">
+            Active Sessions
+          </h2>
           <p className="text-3xl font-bold">278</p>
         </motion.div>
       </div>
