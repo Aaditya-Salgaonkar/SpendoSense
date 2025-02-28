@@ -9,6 +9,7 @@ const UnnecessaryExpenses = () => {
   const [categoryMap, setCategoryMap] = useState({}); // Stores categoryId → name mapping
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
+  const [totalAmount, setTotalAmount] = useState(0); // ✅ State for total amount wasted
 
   useEffect(() => {
     const fetchUnnecessaryExpenses = async () => {
@@ -57,6 +58,7 @@ const UnnecessaryExpenses = () => {
         console.error("Error fetching transactions:", transactionsError);
       } else {
         // 🔥 Step 4: Aggregate Transactions by Category (Sum Total Amounts)
+        let totalSum = 0; // ✅ Variable to store total sum
         const groupedTransactions = transactionsData.reduce((acc, transaction) => {
           const categoryName = categoryMapObject[transaction.categoryid] || "Other";
 
@@ -64,6 +66,7 @@ const UnnecessaryExpenses = () => {
             acc[categoryName] = 0;
           }
           acc[categoryName] += transaction.amount;
+          totalSum += transaction.amount; // ✅ Add to total sum
 
           return acc;
         }, {});
@@ -75,6 +78,7 @@ const UnnecessaryExpenses = () => {
         }));
 
         setTransactions(formattedChartData); // ✅ Store aggregated transactions
+        setTotalAmount(totalSum); // ✅ Store total amount wasted
       }
 
       setLoading(false);
@@ -84,7 +88,7 @@ const UnnecessaryExpenses = () => {
   }, []);
 
   return (
-    <div className="bg-gray-900 p-5 rounded-lg shadow-sm shadow-white text-white h-1/3">
+    <div className="bg-gray-900 p-5 rounded-lg shadow-sm shadow-white text-white h-1/3 w-1/3">
       <h2 className="text-xl font-bold mb-4 px-14">Unnecessary Expenses</h2>
 
       {loading ? (
@@ -92,25 +96,27 @@ const UnnecessaryExpenses = () => {
       ) : transactions.length === 0 ? (
         <p>No unnecessary expenses found.</p>
       ) : (
-        <div className="flex justify-center"><PieChart width={300} height={350} >
-          <Pie
-            data={transactions}
-            cx="50%"
-            cy="50%"
-            outerRadius={110}
-            fill="#8884d8"
-            dataKey="value"
-            label
-          >
-            {transactions.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip />
-          <Legend />
-        </PieChart> </div>
-    
-        
+        <div className="flex flex-col justify-center items-center">
+          <PieChart width={300} height={350}>
+            <Pie
+              data={transactions}
+              cx="50%"
+              cy="50%"
+              outerRadius={110}
+              fill="#8884d8"
+              dataKey="value"
+              label
+            >
+              {transactions.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+          </PieChart> 
+          {/* ✅ Display Total Amount Wasted */}
+          <h2 className="text-xl font-bold mt-4 px-14">Total Amount Wasted: ₹{totalAmount}</h2>
+        </div>
       )}
     </div>
   );

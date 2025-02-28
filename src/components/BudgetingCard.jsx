@@ -47,7 +47,6 @@ const BudgetingDialog = () => {
       const { data, error } = await supabase
         .from("categories")
         .select("id, name")
-        .eq("userid", currentUserId);
 
       if (error) {
         console.error("Error fetching categories:", error);
