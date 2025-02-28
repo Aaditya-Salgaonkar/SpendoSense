@@ -6,6 +6,8 @@ import Dashboard from "./screens/Dashboard";
 import LandingPage from "./screens/LandingPage";
 import Expenses from "./screens/expenses";
 import Insights from "./screens/insights";
+import AddExpense from "./screens/AddExpense";
+
 const App = () => {
   const [token, setToken] = useState(sessionStorage.getItem("token") || null);
 
@@ -42,6 +44,12 @@ const App = () => {
           path="/insights"
           element={
             token ? <Insights token={token} /> : <Navigate to="/login" />
+          }
+        />
+        <Route
+          path="/addexpense"
+          element={
+            token ? <AddExpense token={token} /> : <Navigate to="/login" />
           }
         />
       </Routes>

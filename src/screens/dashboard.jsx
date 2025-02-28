@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Box, Stack, Typography } from "@mui/material";
+import { supabase } from "@/supabase";
+
 import {
   PieChart,
   Pie,
@@ -39,32 +41,32 @@ const incomeSourceData = [
   { name: "Salary", value: 13000, color: "#00D084" },
 ];
 
-const spendingBreakdown = [
-  {
-    label: "Housing",
-    amount: "$3,452",
-    icon: <HomeIcon sx={{ color: "white" }} />,
-    iconColor: "#8B5CF6",
-  },
-  {
-    label: "Personal",
-    amount: "$45,581",
-    icon: <PersonIcon sx={{ color: "white" }} />,
-    iconColor: "#EC4899",
-  },
-  {
-    label: "Transportation",
-    amount: "$2,190",
-    icon: <DirectionsCarIcon sx={{ color: "white" }} />,
-    iconColor: "#F97316",
-  },
-  {
-    label: "Family",
-    amount: "$7,190",
-    icon: <PeopleIcon sx={{ color: "white" }} />,
-    iconColor: "rgb(253, 81, 54)",
-  },
-];
+// const spendingBreakdown = [
+//   {
+//     label: "Housing",
+//     amount: "$3,452",
+//     icon: <HomeIcon sx={{ color: "white" }} />,
+//     iconColor: "#8B5CF6",
+//   },
+//   {
+//     label: "Personal",
+//     amount: "$45,581",
+//     icon: <PersonIcon sx={{ color: "white" }} />,
+//     iconColor: "#EC4899",
+//   },
+//   {
+//     label: "Transportation",
+//     amount: "$2,190",
+//     icon: <DirectionsCarIcon sx={{ color: "white" }} />,
+//     iconColor: "#F97316",
+//   },
+//   {
+//     label: "Family",
+//     amount: "$7,190",
+//     icon: <PeopleIcon sx={{ color: "white" }} />,
+//     iconColor: "rgb(253, 81, 54)",
+//   },
+// ];
 
 const assetData = [
   { name: "Gold", value: 15700 },
@@ -107,6 +109,103 @@ const transactions = [
 const Dashboard = () => {
   const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(true);
+  const [users, setUsers] = useState([]);
+
+  const [transactions, setTransactions] = useState([]);
+
+  const [budgets, setBudgets] = useState([]);
+
+  const [analytics, setAnalytics] = useState([]);
+
+  const [financialAdvice, setFinancialAdvice] = useState([]);
+
+  const [categories, setCategories] = useState([]);
+
+  const [spendingBreakdown, setSpendingBreakdown] = useState([]);
+
+  const categoryMap = [
+    {
+      id: "47823c77-f9b8-4387-a76d-54e07c0bf227",
+      label: "Dining Out",
+      icon: <HomeIcon sx={{ color: "white" }} />,
+      iconColor: "#8B5CF6",
+    },
+    {
+      id: "5d98b586-fbb9-4c4b-bed5-ff739eba3ea5",
+      label: "Travel",
+      icon: <PersonIcon sx={{ color: "white" }} />,
+      iconColor: "#EC4899",
+    },
+    {
+      id: "de8d5f42-77c6-4b29-9cdd-6bfc4daf3593",
+      label: "Transportation",
+      icon: <DirectionsCarIcon sx={{ color: "white" }} />,
+      iconColor: "#F97316",
+    },
+    {
+      id: "52c6cc86-78c2-4848-8f4a-ca934fe90ca1",
+      label: "Healthcare",
+      icon: <PeopleIcon sx={{ color: "white" }} />,
+      iconColor: "rgb(253, 81, 54)",
+    },
+  ];
+
+  useEffect(() => {
+    const fetchSpendingBreakdown = async () => {
+      try {
+        console.log("Fetching spending breakdown...");
+        const breakdownData = await Promise.all(
+          categoryMap.map(async (category) => {
+            console.log(
+              `Fetching transactions for category: ${category.label} (ID: ${category.id})`
+            );
+
+            const { data, error } = await supabase
+              .from("transactions")
+              .select("amount")
+              .eq("categoryid", category.id);
+
+            if (error) {
+              console.error(
+                `Error fetching ${category.label} transactions:`,
+                error
+              );
+              return { ...category, amount: "$0.00" };
+            }
+
+            console.log(`Fetched transactions for ${category.label}:`, data);
+
+            const totalAmount = data.reduce(
+              (sum, txn) => sum + parseFloat(txn.amount),
+              0
+            );
+            console.log(`Total amount for ${category.label}: ${totalAmount}`);
+
+            const formattedAmount = `$${totalAmount.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}`;
+
+            console.log(
+              `Formatted amount for ${category.label}: ${formattedAmount}`
+            );
+
+            return {
+              ...category,
+              amount: formattedAmount,
+            };
+          })
+        );
+
+        console.log("Final spending breakdown:", breakdownData);
+        setSpendingBreakdown(breakdownData);
+      } catch (error) {
+        console.error("Error fetching spending breakdown:", error);
+      }
+    };
+
+    fetchSpendingBreakdown();
+  }, []);
 
   return (
     <div
