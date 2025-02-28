@@ -3,9 +3,29 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import PayPalButton from "./RazorPay";
+import Balance from "@/components/balance";
+import { Box, Stack, Typography } from "@mui/material";
+import { Cell, LineChart, Line } from "recharts";
+
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  LabelList,
+} from "recharts";
+import { Card, CardContent } from "@/components/ui/card";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const data = [
+    { name: "E-commerce", value: 2100, color: " #FFFFFF" },
+    { name: "Google Adsense", value: 950, color: "#FF4D4D" },
+    { name: "My Shop", value: 8000, color: "#FFFFFF" },
+    { name: "Salary", value: 13000, color: "#00D084" },
+  ];
 
   const handleLogout = () => {
     sessionStorage.removeItem("token"); // Clear token
@@ -26,25 +46,168 @@ const Dashboard = () => {
       </nav>
 
       {/* Dashboard Content */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-8xl mt-8 bg-white">
         {/* Card 1 */}
         <motion.div
-          className="p-6 bg-gray-800 shadow-lg rounded-xl text-center"
+          className="p-2 bg-white shadow-lg rounded-xl text-center"
           whileHover={{ scale: 1.05 }}
         >
-          <h2 className="text-xl font-semibold text-blue-400">Total Users</h2>
-          <p className="text-3xl font-bold">1,254</p>
+          {/* <h2 className="text-xl font-semibold text-blue-400">Total Users</h2>
+          <p className="text-3xl font-bold">1,254</p> */}
+          <Stack
+            direction={"column"}
+            gap={2}
+            sx={{
+              height: "500px",
+            }}
+          >
+            <Stack
+              direction={"column"}
+              spacing={1}
+              pt={2}
+              sx={{
+                height: "30%",
+                width: "100%",
+                borderRadius: "20px",
+                background: "linear-gradient(90deg, #FF7F50, #FF4500)",
+              }}
+            >
+              <Typography fontSize={32} fontWeight={600}>
+                Total networth
+              </Typography>
+              <Typography fontSize={32} fontWeight={600}>
+                $278,378
+              </Typography>
+            </Stack>
+            <Box
+              sx={{
+                height: "70%",
+                width: "100%",
+                backgroundColor: "#171c3a",
+                borderRadius: "20px",
+              }}
+            >
+              <h2 className="text-white text-xl mb-4">Income Source</h2>
+              <ResponsiveContainer
+                width="100%"
+                height="90%"
+                className="overflow-auto"
+                style={{
+                  padding: "20px",
+                }}
+              >
+                <BarChart data={data} barSize={50}>
+                  <XAxis dataKey="name" stroke="#FFFFFF" fontWeight={600} />
+                  <Tooltip />
+                  <Bar dataKey="value">
+                    <LabelList dataKey="value" position="top" fill="#FFFFFF" />
+                    {data.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </Box>
+          </Stack>
         </motion.div>
-
-        <PayPalButton />
 
         {/* Card 2 */}
         <motion.div
-          className="p-6 bg-gray-800 shadow-lg rounded-xl text-center"
+          className="p-2 bg-white shadow-lg rounded-xl text-center"
           whileHover={{ scale: 1.05 }}
         >
-          <h2 className="text-xl font-semibold text-green-400">Revenue</h2>
-          <p className="text-3xl font-bold">$5,430</p>
+          {/* <h2 className="text-xl font-semibold text-green-400">Revenue</h2>
+          <p className="text-3xl font-bold">$5,430</p> */}
+          <Stack
+            sx={{
+              height: "100%",
+              width: "100%",
+            }}
+            direction={"column"}
+            gap={2}
+          >
+            <Stack
+              direction={"column"}
+              sx={{
+                height: "50%",
+                width: "100%",
+                backgroundColor: "#171c3a",
+                borderRadius: "30px",
+                padding: 2,
+              }}
+            >
+              <Typography
+                fontSize={32}
+                fontWeight={600}
+                color="white"
+                textAlign="left"
+                ml={3}
+              >
+                Spending
+              </Typography>
+              <Typography
+                fontSize={24}
+                fontWeight={500}
+                color="white"
+                textAlign="left"
+                ml={3}
+              >
+                $1,200
+              </Typography>
+              <ResponsiveContainer width="100%" height="70%">
+                <LineChart data={data}>
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#FF4500"
+                    strokeWidth={3}
+                    dot={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </Stack>
+
+            <Stack
+              direction={"column"}
+              sx={{
+                height: "50%",
+                width: "100%",
+                backgroundColor: "#171c3a",
+                borderRadius: "30px",
+                padding: 2,
+              }}
+            >
+              <Typography
+                fontSize={32}
+                fontWeight={600}
+                color="white"
+                textAlign="left"
+                ml={3}
+              >
+                Spending
+              </Typography>
+              <Typography
+                fontSize={24}
+                fontWeight={500}
+                color="white"
+                textAlign="left"
+                ml={3}
+              >
+                $1,200
+              </Typography>
+              <ResponsiveContainer width="100%" height="70%">
+                <LineChart data={data}>
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#FF4500"
+                    strokeWidth={3}
+                    dot={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </Stack>
+          </Stack>
         </motion.div>
 
         {/* Card 3 */}
