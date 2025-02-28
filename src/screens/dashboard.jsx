@@ -2,10 +2,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import PayPalButton from "./RazorPay";
-import Balance from "@/components/balance";
 import { Box, Stack, Typography } from "@mui/material";
 import { Cell, LineChart, Line } from "recharts";
+import HomeIcon from "@mui/icons-material/Home";
+import PersonIcon from "@mui/icons-material/Person";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 
 import {
   BarChart,
@@ -27,6 +28,27 @@ const Dashboard = () => {
     { name: "Salary", value: 13000, color: "#00D084" },
   ];
 
+  const data2 = [
+    {
+      label: "Housing",
+      amount: "$3,452",
+      icon: <HomeIcon sx={{ color: "white" }} />,
+      iconColor: "#8B5CF6",
+    },
+    {
+      label: "Personal",
+      amount: "$45,581",
+      icon: <PersonIcon sx={{ color: "white" }} />,
+      iconColor: "#EC4899",
+    },
+    {
+      label: "Transportation",
+      amount: "$2,190",
+      icon: <DirectionsCarIcon sx={{ color: "white" }} />,
+      iconColor: "#F97316",
+    },
+  ];
+
   const handleLogout = () => {
     sessionStorage.removeItem("token"); // Clear token
     navigate("/login"); // Redirect to login
@@ -46,7 +68,7 @@ const Dashboard = () => {
       </nav>
 
       {/* Dashboard Content */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 w-full max-w-8xl mt-8 bg-white">
+      <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-8xl mt-8 bg-white">
         {/* Card 1 */}
         <Stack
           direction={"column"}
@@ -236,36 +258,61 @@ const Dashboard = () => {
         </Stack>
 
         {/* Card 3 */}
-        <Stack
-          sx={{
-            height: "100%",
-            width: "100%",
-            padding: 1.5,
-          }}
-        >
-          <Box
+        <motion.div whileHover={{ scale: 1.05 }}>
+          <Stack
             sx={{
               height: "100%",
               width: "100%",
-              backgroundColor: "#171c3a",
-              borderRadius: "20px",
+              padding: 1.5,
             }}
           >
-            <Stack
+            <Box
               sx={{
                 height: "100%",
                 width: "100%",
-                backgroundColor: "green",
+                backgroundColor: "#171c3a",
+                borderRadius: "20px",
+                padding: 4.5,
               }}
-              direction={"column"}
-            ></Stack>
-          </Box>
-        </Stack>
-
-        <motion.div
-          className="p-6 bg-gray-800 shadow-lg rounded-xl text-center"
-          whileHover={{ scale: 1.05 }}
-        ></motion.div>
+            >
+              <Typography fontSize={20} fontWeight={600} color="white" mb={2}>
+                Spendings
+              </Typography>
+              <Stack direction="column" spacing={3}>
+                {data2.map((item, index) => (
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={2}
+                    key={index}
+                  >
+                    <Box
+                      sx={{
+                        height: 50,
+                        width: 50,
+                        backgroundColor: item.iconColor,
+                        borderRadius: "15px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {item.icon}
+                    </Box>
+                    <Stack>
+                      <Typography fontSize={18} fontWeight={500} color="white">
+                        {item.label}
+                      </Typography>
+                      <Typography fontSize={20} fontWeight={600} color="white">
+                        {item.amount}
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                ))}
+              </Stack>
+            </Box>
+          </Stack>
+        </motion.div>
       </div>
     </div>
   );
