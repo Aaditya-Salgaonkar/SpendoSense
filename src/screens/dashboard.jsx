@@ -22,6 +22,7 @@ import HomeNav from "@/components/HomeNav";
 import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import PeopleIcon from "@mui/icons-material/People";
 
 const COLORS = ["#4CAF50", "#FFC107", "#2196F3", "#FF5722"];
 
@@ -56,6 +57,12 @@ const spendingBreakdown = [
     amount: "$2,190",
     icon: <DirectionsCarIcon sx={{ color: "white" }} />,
     iconColor: "#F97316",
+  },
+  {
+    label: "Family",
+    amount: "$7,190",
+    icon: <PeopleIcon sx={{ color: "white" }} />,
+    iconColor: "rgb(253, 81, 54)",
   },
 ];
 
