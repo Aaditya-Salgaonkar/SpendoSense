@@ -158,7 +158,7 @@ const AddTransaction = () => {
     <div className="flex h-screen items-center justify-center p-10 bg-[#0a0f1c]">
       <div className="p-8 rounded-lg shadow-lg shadow-blue-800 bg-opacity-5 w-1/3">
         <h2 className="text-xl bg-gradient-to-r from-blue-500 to-black font-semibold mb-4 text-transparent bg-clip-text">
-          Add Transaction
+          Add Expense
         </h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input

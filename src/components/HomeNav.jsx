@@ -4,6 +4,7 @@ import { supabase } from "@/supabase";
 import { Button } from "@/components/ui/button";
 import { DashboardRounded, Insights, Money, Wallet } from "@mui/icons-material";
 import { Building, Coins } from "lucide-react";
+import Spinner from "./Spinner";
 
 const HomeNav = () => {
   const navigate = useNavigate();
@@ -87,7 +88,7 @@ const HomeNav = () => {
             </Button>
           </>
         ) : (
-          <p className="text-white">Loading...</p>
+          <div><Spinner /></div>
         )}
       </div>
     </nav>

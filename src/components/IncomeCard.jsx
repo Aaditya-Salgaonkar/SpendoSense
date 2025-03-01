@@ -67,11 +67,11 @@ const IncomeCard = () => {
             boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.2)",
           }}
         >
-          <Typography fontSize={28} fontWeight={700} color="#171c3a">
+          <Typography fontSize={30} fontWeight={770} color="#171c3a">
             Total Net Worth
           </Typography>
           <Typography fontSize={36} fontWeight={700} color="#fff">
-            ${totalNetWorth.toLocaleString()}
+          ₹{totalNetWorth.toLocaleString()}
           </Typography>
         </Stack>
       </motion.div>

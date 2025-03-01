@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -103,187 +103,197 @@ const transactions = [
   },
 ];
 
-const Dashboard = ({token}) => {
+const Dashboard = ({ token }) => {
   const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(true);
   const [users, setUsers] = useState([]);
-    const [transactions, setTransactions] = useState([]);
-    const [budgets, setBudgets] = useState([]);
-    const [analytics, setAnalytics] = useState([]);
-    const [financialAdvice, setFinancialAdvice] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [loading,setLoading] = useState(true);
-    const [spendingBreakdown, setSpendingBreakdown] = useState([]);
-    const [incomeSourceDataForGraph, setIncomeSourceDataForGraph] = useState([]);
-    const [incomeSourceDataForGraph2, setIncomeSourceDataForGraph2] = useState(
-      []
-    );
-    const categoryMap = [
-      {
-        id: "47823c77-f9b8-4387-a76d-54e07c0bf227",
-        label: "Dining Out",
-        icon: <HomeIcon sx={{ color: "white" }} />,
-        iconColor: "#8B5CF6",
-      },
-      {
-        id: "5d98b586-fbb9-4c4b-bed5-ff739eba3ea5",
-        label: "Travel",
-        icon: <PersonIcon sx={{ color: "white" }} />,
-        iconColor: "#EC4899",
-      },
-      {
-        id: "de8d5f42-77c6-4b29-9cdd-6bfc4daf3593",
-        label: "Transportation",
-        icon: <DirectionsCarIcon sx={{ color: "white" }} />,
-        iconColor: "#F97316",
-      },
-      {
-        id: "52c6cc86-78c2-4848-8f4a-ca934fe90ca1",
-        label: "Healthcare",
-        icon: <People sx={{ color: "white" }} />,
-        iconColor: "rgb(253, 81, 54)",
-      },
-    ];
-    useEffect(() => {
-      const fetchSpendingBreakdown = async () => {
-        try {
-          const breakdownData = await Promise.all(
-            categoryMap.map(async (category) => {
-              const { data, error } = await supabase
-                .from("transactions")
-                .select("amount")
-                .eq("categoryid", category.id);
-  
-              if (error) {
-                console.error(
-                  `Error fetching ${category.label} transactions:`,
-                  error
-                );
-                return { ...category, amount: "$0.00" };
-              }
-  
-              const totalAmount = data.reduce(
-                (sum, txn) => sum + parseFloat(txn.amount),
-                0
+  const [transactions, setTransactions] = useState([]);
+  const [budgets, setBudgets] = useState([]);
+  const [analytics, setAnalytics] = useState([]);
+  const [financialAdvice, setFinancialAdvice] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [spendingBreakdown, setSpendingBreakdown] = useState([]);
+  const [incomeSourceDataForGraph, setIncomeSourceDataForGraph] = useState([]);
+  const [incomeSourceDataForGraph2, setIncomeSourceDataForGraph2] = useState(
+    []
+  );
+  const categoryMap = [
+    {
+      id: "47823c77-f9b8-4387-a76d-54e07c0bf227",
+      label: "Dining Out",
+      icon: <HomeIcon sx={{ color: "white" }} />,
+      iconColor: "#8B5CF6",
+    },
+    {
+      id: "5d98b586-fbb9-4c4b-bed5-ff739eba3ea5",
+      label: "Travel",
+      icon: <PersonIcon sx={{ color: "white" }} />,
+      iconColor: "#EC4899",
+    },
+    {
+      id: "de8d5f42-77c6-4b29-9cdd-6bfc4daf3593",
+      label: "Transportation",
+      icon: <DirectionsCarIcon sx={{ color: "white" }} />,
+      iconColor: "#F97316",
+    },
+    {
+      id: "52c6cc86-78c2-4848-8f4a-ca934fe90ca1",
+      label: "Healthcare",
+      icon: <People sx={{ color: "white" }} />,
+      iconColor: "rgb(253, 81, 54)",
+    },
+  ];
+
+  useEffect(() => {
+    const fetchSpendingBreakdown = async () => {
+      try {
+        const {
+          data: { user },
+          error: useError,
+        } = await supabase.auth._getUser();
+        const breakdownData = await Promise.all(
+          categoryMap.map(async (category) => {
+            const { data, error } = await supabase
+              .from("transactions")
+              .select("amount")
+              .eq("categoryid", category.id)
+              .eq("userid", user.id);
+
+            console.log("This is category id: ", category.id);
+            if (error) {
+              console.error(
+                `Error fetching ${category.label} transactions:`,
+                error
               );
-  
-              const formattedAmount = `$${totalAmount.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}`;
-  
-              return {
-                ...category,
-                amount: formattedAmount,
-              };
-            })
-          );
-  
-          setSpendingBreakdown(breakdownData);
-        } catch (error) {
-          console.error("Error fetching spending breakdown:", error);
+              return { ...category, amount: "$0.00" };
+            }
+
+            const totalAmount = data.reduce(
+              (sum, txn) => sum + parseFloat(txn.amount),
+              0
+            );
+
+            const formattedAmount = `$${totalAmount.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}`;
+
+            return {
+              ...category,
+              amount: formattedAmount,
+            };
+          })
+        );
+
+        setSpendingBreakdown(breakdownData);
+      } catch (error) {
+        console.error("Error fetching spending breakdown:", error);
+      }
+    };
+
+    fetchSpendingBreakdown();
+  }, []);
+
+  useEffect(() => {
+    console.log("Fetching income data...");
+
+    const fetchIncomeData = async () => {
+      try {
+        const {
+          data: { user },
+          error: useError,
+        } = await supabase.auth._getUser();
+        console.log("Fetching income data...");
+        const { data, error } = await supabase
+          .from("income")
+          .select("amount, created_at")
+          .eq("userId", user.id)
+          .order("created_at", { ascending: true });
+
+        if (error) throw error;
+
+        console.log("Fetched income data:", data);
+
+        const formattedData = data.map((item) => ({
+          value: item.amount,
+          date: new Date(item.created_at).toLocaleDateString(),
+        }));
+
+        console.log("Formatted income data:", formattedData);
+        setIncomeSourceDataForGraph(formattedData);
+      } catch (err) {
+        console.error("Error fetching income data:", err.message);
+      }
+    };
+
+    const fetchSpendData = async () => {
+      try {
+        const {
+          data: { user },
+          error: useError,
+        } = await supabase.auth._getUser();
+        console.log("Fetching spend data...");
+        const { data, error } = await supabase
+          .from("transactions")
+          .select("amount, transactiontime")
+          .eq("userid", user.id)
+          .order("transactiontime", { ascending: true });
+
+        if (error) throw error;
+
+        console.log("Fetched spend data:", data);
+
+        const formattedSpendData = data.map((item) => ({
+          value: item.amount,
+          date: new Date(item.transactiontime).toLocaleDateString(),
+        }));
+
+        console.log(
+          "---------------------Formatted spend data:",
+          formattedSpendData
+        );
+        setIncomeSourceDataForGraph2(formattedSpendData);
+      } catch (err) {
+        console.error("Error fetching spend data:", err.message);
+      }
+    };
+
+    fetchIncomeData();
+    fetchSpendData();
+  }, []);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+
+        const { data, error } = await supabase.from("categories").select("*");
+
+        if (error) {
+          console.error("Error fetching categories:", error);
+
+          return;
         }
-      };
-  
-      fetchSpendingBreakdown();
-    }, []);
-  
-    useEffect(() => {
-      console.log("Fetching income data...");
-  
-      const fetchIncomeData = async () => {
-        try {
-          const {
-            data: { user },
-            error: useError,
-          } = await supabase.auth._getUser();
-          console.log("Fetching income data...");
-          const { data, error } = await supabase
-            .from("income")
-            .select("amount, created_at")
-            .eq("userId", user.id)
-            .order("created_at", { ascending: true });
-  
-          if (error) throw error;
-  
-          console.log("Fetched income data:", data);
-  
-          const formattedData = data.map((item) => ({
-            value: item.amount,
-            date: new Date(item.created_at).toLocaleDateString(),
-          }));
-  
-          console.log("Formatted income data:", formattedData);
-          setIncomeSourceDataForGraph(formattedData);
-        } catch (err) {
-          console.error("Error fetching income data:", err.message);
+
+        if (Array.isArray(data)) {
+          setCategories(data);
+
+          setLoading(false);
+        } else {
+          console.warn("Unexpected data format:", data);
+
+          setCategories([]);
         }
-      };
-  
-      const fetchSpendData = async () => {
-        try {
-          const {
-            data: { user },
-            error: useError,
-          } = await supabase.auth._getUser();
-          console.log("Fetching spend data...");
-          const { data, error } = await supabase
-            .from("transactions")
-            .select("amount, transactiontime")
-            .eq("userid", user.id)
-            .order("transactiontime", { ascending: true });
-  
-          if (error) throw error;
-  
-          console.log("Fetched spend data:", data);
-  
-          const formattedSpendData = data.map((item) => ({
-            value: item.amount,
-            date: new Date(item.transactiontime).toLocaleDateString(),
-          }));
-  
-          console.log(
-            "---------------------Formatted spend data:",
-            formattedSpendData
-          );
-          setIncomeSourceDataForGraph2(formattedSpendData);
-        } catch (err) {
-          console.error("Error fetching spend data:", err.message);
-        }
-      };
-  
-      fetchIncomeData();
-      fetchSpendData();
-    }, []);
-    useEffect(() => {
-      const fetchCategories = async () => {
-        try {
-          setLoading(true)
-          const { data, error } = await supabase.from("categories").select("*");
-    
-          if (error) {
-            console.error("Error fetching categories:", error);
-            return;
-          }
-    
-          if (Array.isArray(data)) {
-            setCategories(data);
-            setLoading(false)
-          } else {
-            console.warn("Unexpected data format:", data);
-            setCategories([]);
-          }
-        } catch (err) {
-          console.error("Unexpected error fetching categories:", err);
-        }finally{setLoading(false);}
-      };
-    
-      fetchCategories();
-    }, []);
-    
+      } catch (err) {
+        console.error("Unexpected error fetching categories:", err);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleLogout = () => {
-    
     sessionStorage.removeItem("token");
     navigate("/login");
   };
@@ -358,7 +368,7 @@ const Dashboard = ({token}) => {
                   <Bar dataKey="value">
                     <LabelList dataKey="value" position="top" fill="#FFFFFF" />
                     {incomeSourceData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
+                      <Cell key={cell-${index}} fill={entry.color} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -483,7 +493,7 @@ const Dashboard = ({token}) => {
                 padding: 4.5,
               }}
             >
-              <Typography fontSize={20} fontWeight={600} color="white" mb={2}>
+              <Typography fontSize={30} fontWeight={600} color="white" mb={2}>
                 Spendings
               </Typography>
               <Stack direction="column" spacing={3}>
@@ -528,8 +538,6 @@ const Dashboard = ({token}) => {
 
       {/* Recent Transactions */}
       <RecentTransactions />
-
-     
     </div>
   );
 };

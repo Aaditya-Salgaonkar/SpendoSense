@@ -168,7 +168,7 @@ const IncomeDashboard = ({ token }) => {
           </Dialog>
   
           {/* Transactions Table */}
-          <Card className="w-[80%] mt-6 bg-[#0a0f1c] shadow-lg rounded-lg p-3 max-h-[70vh] overflow-y-auto mb-10">
+          <Card className="w-[80%] mt-6 bg-[#0a0f1c] shadow-lg rounded-lg border-2 border-gray-600 max-h-[70vh] overflow-y-auto mb-10">
             {loading ? (
               <Box className="flex justify-center bg-[#0a0f1c]">
                 <div className="items-center justify-center py-5"><Spinner /></div>
@@ -197,7 +197,7 @@ const IncomeDashboard = ({ token }) => {
                 </tbody>
               </table>
             ) : (
-              <Typography color="textSecondary" className="text-center py-6">
+              <Typography className="text-center py-6 bg-[#0a0f1c] text-white">
                 No income transactions found.
               </Typography>
             )}

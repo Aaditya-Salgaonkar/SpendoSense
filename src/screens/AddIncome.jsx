@@ -92,8 +92,8 @@ const AddIncome = () => {
 
   return (
     <div className="flex h-screen items-center justify-center p-10 bg-[#0a0f1c]">
-      <div className=" p-8 rounded-lg shadow-lg shadow-green-800 bg-opacity-5 w-1/3">
-        <h2 className="text-xl bg-gradient-to-r from-green-500 to-black font-semibold mb-4 text-transparent bg-clip-text">
+      <div className=" p-8 rounded-lg shadow-lg shadow-blue-800 bg-opacity-5 w-1/3">
+        <h2 className="text-xl bg-gradient-to-r from-blue-500 to-black font-semibold mb-4 text-transparent bg-clip-text">
           Add Income
         </h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -119,7 +119,7 @@ const AddIncome = () => {
             value={formData.source}
             onChange={handleChange}
             placeholder="Source of Income"
-            className="p-2 border rounded hover:border-green-400"
+            className="p-2 border rounded hover:border-blue-400"
             required
           />
         
@@ -129,7 +129,7 @@ const AddIncome = () => {
             value={formData.amount}
             onChange={handleChange}
             placeholder="Amount"
-            className="p-2 border rounded hover:border-green-400"
+            className="p-2 border rounded hover:border-blue-400"
             required
           />
           <input
@@ -137,7 +137,7 @@ const AddIncome = () => {
             name="createdAt"
             value={formData.createdAt}
             onChange={handleChange}
-            className="p-2 border rounded hover:border-green-400"
+            className="p-2 border rounded hover:border-blue-400"
             required
           />
 
@@ -146,7 +146,7 @@ const AddIncome = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleSubmit}
-            className="p-2 bg-green-800 text-white rounded"
+            className="p-2 bg-blue-800 text-white rounded"
           >
             Submit
           </motion.button>

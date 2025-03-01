@@ -98,7 +98,7 @@ const [darkMode, setDarkMode] = useState(true);
             </Link>
           </div>
           {/* Transactions Table */}
-          <Card className="w-[80%] mt-6 bg-[#0a0f1c] shadow-lg rounded-lg p-3 overflow-y-auto mb-20">
+          <Card className="w-[80%] mt-6 bg-[#0a0f1c] shadow-lg rounded-lg border-2 border-gray-600 overflow-y-auto mb-20">
             {loading ? (
               <Box className="flex justify-center bg-[#0a0f1c]">
                 <div className="items-center justify-center py-5"><Spinner /></div>
@@ -131,7 +131,7 @@ const [darkMode, setDarkMode] = useState(true);
                 </tbody>
               </table>
             ) : (
-              <Typography color="textSecondary" className="text-center py-6">
+              <Typography className=" text-center py-6 bg-[#0a0f1c] text-white">
                 No transactions found.
               </Typography>
             )}

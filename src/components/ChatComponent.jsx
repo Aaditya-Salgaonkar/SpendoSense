@@ -93,8 +93,8 @@ const ChatComponent = () => {
   };
 
   return (
-    <div className="p-24">
-      <div className="flex flex-col items-center justify-center min-h-screen px-4 bg-[#0a0f1c]">
+    <div className="px-24">
+      <div className="flex flex-col items-center justify-center  px-4 bg-[#0a0f1c]">
         <div className="bg-[#0a0f1c] shadow-lg rounded-xl p-6 w-full border-white border">
           <h2 className="text-2xl font-semibold text-center text-white-700 mb-4">
             SpendoSense AI Analysis

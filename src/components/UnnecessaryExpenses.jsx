@@ -27,7 +27,7 @@ const UnnecessaryExpenses = () => {
       setUserId(currentUserId);
 
       // 2️⃣ Fetch all unnecessary categories (Entertainment, Shopping, Food, etc.)
-      const unnecessaryCategories = ["Entertainment", "Shopping", "Food"];
+      const unnecessaryCategories = ["Entertainment", "Shopping", "Food","Dining Out"];
       const { data: categoryData, error: categoryError } = await supabase
         .from("categories")
         .select("id, name")
@@ -89,21 +89,21 @@ const UnnecessaryExpenses = () => {
   }, []);
 
   return (
-    <div className="bg-gray-900 p-5 rounded-lg shadow-sm shadow-white text-white h-[480px] w-[480px]">
+    <div className="bg-gray-900 p-5 rounded-lg shadow-sm shadow-white text-white h-[480px] w-[640px]">
       <h2 className="text-3xl font-bold  mt-3 px-10 text-center ">Unnecessary Expenses</h2>
 
       {loading ? (
          <div className="flex-1 items-center justify-center"><Spinner /></div>
       ) : transactions.length === 0 ? (
-        <p>No unnecessary expenses found.</p>
+        <p className="mt-40 justify-center flex">No unnecessary expenses found.</p>
       ) : (
-        <div className="flex flex-col justify-center items-center">
-          <PieChart width={300} height={350}>
+        <div className="flex flex-col justify-center items-center mt-10">
+          <PieChart width={250} height={250}>
             <Pie
               data={transactions}
               cx="50%"
               cy="50%"
-              outerRadius={110}
+              outerRadius={60}
               fill="#8884d8"
               dataKey="value"
               label

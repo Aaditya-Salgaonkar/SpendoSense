@@ -59,13 +59,13 @@ const [loading,setLoading]=useState(true);
           <BudgetingCard />
         </div></div>
       
-      <div className="min-h-screen flex flex-row justify-between bg-[#0a0f1c] p-10 h-full w-full gap-8">
+      <div className=" flex flex-row justify-between bg-[#0a0f1c] p-10 h-full w-full gap-8">
         {/* Unnecessary Expenses --> Show a pie chart */}
         <UnnecessaryExpenses /> 
         <GroupedBarChart />
     
       </div> 
-      <div className="min-h-screen flex flex-row justify-between bg-[#0a0f1c] p-10 h-full w-full gap-8">
+      <div className=" flex flex-row justify-between bg-[#0a0f1c] p-10 h-full w-full gap-8">
      <ExpenseAnalyzer />
      <InvestmentAvenues />
     <ChatBot />

@@ -9,6 +9,7 @@ import {
   Legend,
 } from "recharts";
 import IncomeVsExpenses from "./IE"; // Assuming the IncomeVsExpenses component is already created
+import { User } from "lucide-react";
 
 const COLORS = [
   "#FF6347", "#FFBB28", "#00C49F", "#0088FE", "#FF8042", "#8A2BE2", "#FF69B4", "#32CD32", "#00CED1", "#FF4500"
@@ -25,21 +26,35 @@ const AssetDistribution = () => {
   const fetchAssetData = async () => {
     setLoading(true);
     setError(null);
-
+  
     try {
+      // Get the authenticated user
+      const { data: userData, error: userError } = await supabase.auth._getUser();
+  
+      if (userError) throw userError;
+      if (!userData?.user) {
+        setError("User not logged in.");
+        setLoading(false);
+        return;
+      }
+  
+      const userId = userData.user.id;
+  
+      // Fetch asset data filtered by the logged-in user
       const { data, error } = await supabase
         .from("asset_distribution")
         .select("category, value")
+        .eq("userid", userId) // Ensure only this user's data is fetched
         .order("created_at", { ascending: true });
-
+  
       if (error) throw error;
-
-      // Format the data for the Pie Chart
+  
+      // Format data for the Pie Chart
       const formattedData = data.map((item) => ({
         name: item.category,
         value: item.value,
       }));
-
+  
       console.log("Asset Distribution Data:", formattedData);
       setAssetData(formattedData);
     } catch (error) {
@@ -49,6 +64,7 @@ const AssetDistribution = () => {
       setLoading(false);
     }
   };
+  
 
   // Fetch data on mount
   useEffect(() => {
@@ -60,26 +76,33 @@ const AssetDistribution = () => {
       alert("Please fill in both fields.");
       return;
     }
-
+  
     try {
-      // Submit asset to Supabase
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (userError || !userData?.user) {
+        alert("User not authenticated.");
+        return;
+      }
+  
+      const userId = userData.user.id;
+  
+      // Submit asset to Supabase with userId
       const { data, error } = await supabase
         .from("asset_distribution")
-        .insert([
-          { category, value: parseFloat(value) },
-        ]);
-
+        .insert([{ category, value: parseFloat(value), userId }]);
+  
       if (error) throw error;
-
-      // Clear the form and refetch the data
+  
+      // Clear form and refetch data
       setCategory("");
       setValue("");
-      await fetchAssetData();  // Refetch data after adding the asset
+      await fetchAssetData();
     } catch (error) {
       console.error("Error adding asset:", error);
       alert("Failed to add asset.");
     }
   };
+  
 
   // Custom Tooltip to show details
   const renderCustomizedTooltip = ({ payload, label }) => {
@@ -109,7 +132,7 @@ const AssetDistribution = () => {
     <div className="w-full mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Asset Distribution PieChart */}
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col items-center">
-        <h2 className="text-2xl font-semibold text-gradient bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-blue-500">
+        <h2 className="text-3xl font-bold text-gradient bg-clip-text text-transparent bg-gradient-to-r text-white">
           Asset Distribution
         </h2>
 
