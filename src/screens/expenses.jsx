@@ -70,7 +70,7 @@ const ExpensesDashboard = ({ token }) => {
   }, []);
 
   return (
-    <div className="w-full h-full bg-[#0a0f1c] text-white">
+    <div className="w-full h-full bg-[#0a0f1c] text-white ">
       <div
         className={` ${
           darkMode ? "bg-[#0a0f1c] text-white" : "bg-gray-100 text-black"
